@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.services;
 
+import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.store.entities.UserEntity;
 import hinc.come.guiltyornot.store.repositories.UserRepository;
 import lombok.AccessLevel;
@@ -14,9 +15,9 @@ public class AuthService {
     @Autowired
     UserRepository userRepository;
 
-    public UserEntity registration(UserEntity user) {
+    public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
         if (userRepository.findByUsername(user.getUsername()) != null){
-            return null;
+            throw new UserAlreadyExistException("User with such username already exist");
         }
         return userRepository.save(user);
     }
