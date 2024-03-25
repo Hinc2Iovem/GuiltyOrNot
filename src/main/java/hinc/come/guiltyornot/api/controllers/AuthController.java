@@ -25,7 +25,7 @@ public class AuthController {
     public ResponseEntity registration(@RequestBody UserEntity user) {
         try {
             authService.registration(user);
-            return ResponseEntity.ok("User was created successfully");
+            return ResponseEntity.ok().body(user);
         } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

@@ -26,7 +26,6 @@ public class UserEntity {
 
     String role;
 
-    @NonNull
     String password;
 
     @Builder.Default

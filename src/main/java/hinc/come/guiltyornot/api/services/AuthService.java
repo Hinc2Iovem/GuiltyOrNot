@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.services;
 
+import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.store.entities.UserEntity;
 import hinc.come.guiltyornot.store.repositories.UserRepository;
@@ -15,9 +16,15 @@ public class AuthService {
     @Autowired
     UserRepository userRepository;
 
-    public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
+    public UserEntity registration(UserEntity user) throws UserAlreadyExistException, MissingCredentials {
         if (userRepository.findByUsername(user.getUsername()) != null){
             throw new UserAlreadyExistException("User with such username already exist");
+        }
+
+        if (user.getUsername() == null || user.getUsername().isEmpty() ||
+            user.getPassword() == null || user.getPassword().isEmpty() ||
+            user.getRole() == null || user.getRole().isEmpty()) {
+            throw new MissingCredentials("All fields required: username, password, role");
         }
         return userRepository.save(user);
     }
