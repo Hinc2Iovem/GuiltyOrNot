@@ -22,15 +22,27 @@ public class MissionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NonNull
     @Column(unique = true)
     String title;
 
+    @NonNull
     String description;
-    Integer levelOfDifficulty;
-    Integer reward_exp;
-    Integer reward_money;
-    Integer defeat_exp;
-    Integer defeat_money;
+
+    @Builder.Default
+    Integer levelOfDifficulty = 1;
+
+    @Builder.Default
+    Integer reward_exp = 0;
+
+    @Builder.Default
+    Integer reward_money = 0;
+
+    @Builder.Default
+    Integer defeat_exp = 0;
+
+    @Builder.Default
+    Integer defeat_money = 0;
 
     @Builder.Default
     Instant createdAt = Instant.now();

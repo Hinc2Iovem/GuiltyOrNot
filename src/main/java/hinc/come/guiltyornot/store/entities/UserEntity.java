@@ -25,9 +25,15 @@ public class UserEntity {
     String username;
 
     String role;
+
+    @NonNull
     String password;
-    Integer exp;
-    Integer money;
+
+    @Builder.Default
+    Integer exp = 0;
+
+    @Builder.Default
+    Integer money = 0;
 
     @Builder.Default
     @OneToMany(mappedBy = "user")

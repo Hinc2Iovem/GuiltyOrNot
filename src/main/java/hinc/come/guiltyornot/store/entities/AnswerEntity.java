@@ -20,9 +20,14 @@ public class AnswerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NonNull
     String text;
+
+    @NonNull
     String type;
-    Integer points;
+
+    @Builder.Default
+    Integer points = 0;
 
     @Builder.Default
     Instant time = Instant.now();
