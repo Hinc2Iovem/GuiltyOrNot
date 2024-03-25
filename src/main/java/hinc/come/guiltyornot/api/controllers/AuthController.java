@@ -2,6 +2,7 @@ package hinc.come.guiltyornot.api.controllers;
 
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
+import hinc.come.guiltyornot.api.models.User;
 import hinc.come.guiltyornot.api.services.AuthService;
 import hinc.come.guiltyornot.store.entities.UserEntity;
 import hinc.come.guiltyornot.store.repositories.UserRepository;
@@ -28,7 +29,7 @@ public class AuthController {
     public ResponseEntity registration(@RequestBody UserEntity user) {
         try {
             authService.registration(user);
-            return ResponseEntity.ok().body(user);
+            return ResponseEntity.ok().body(User.toModel(user));
         } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -40,7 +41,7 @@ public class AuthController {
     public ResponseEntity login(@RequestBody UserEntity user) {
         try {
             UserEntity currentUser = authService.login(user);
-            return ResponseEntity.ok().body(currentUser);
+            return ResponseEntity.ok().body(User.toModel(currentUser));
         } catch (NotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
