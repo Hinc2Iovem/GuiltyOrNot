@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Stream;
@@ -24,12 +25,13 @@ public class MissionController {
     public static final String SINGLE_MISSION = "/{missionId}";
 
     @GetMapping
+    @Transactional(readOnly = true)
     public ResponseEntity getMissions(){
         try {
             Stream<MissionEntity> missions = missionService.getMissions();
             return ResponseEntity.ok().body(missions);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong");
+            return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
         }
     }
 
