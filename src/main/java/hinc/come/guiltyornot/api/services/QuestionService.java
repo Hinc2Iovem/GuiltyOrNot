@@ -1,5 +1,7 @@
 package hinc.come.guiltyornot.api.services;
 
+import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
+import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.store.entities.QuestionEntity;
 import hinc.come.guiltyornot.store.repositories.QuestionRepository;
 import lombok.AccessLevel;
@@ -26,8 +28,16 @@ public class QuestionService {
         return null;
     }
 
-    public QuestionEntity createQuestion(QuestionEntity questionBody){
-        return null;
+    public QuestionEntity createQuestion(QuestionEntity questionBody) throws UserAlreadyExistException, MissingCredentials {
+        if(questionRepository.findByTitle(questionBody.getTitle()) != null) {
+            throw new UserAlreadyExistException("Such question already exists");
+        }
+
+        if(questionBody.getTitle().isEmpty() || questionBody.getText().isEmpty()){
+            throw new MissingCredentials("Title and text are required");
+        }
+
+        return questionRepository.save(questionBody);
     }
 
     public QuestionEntity updateQuestion(

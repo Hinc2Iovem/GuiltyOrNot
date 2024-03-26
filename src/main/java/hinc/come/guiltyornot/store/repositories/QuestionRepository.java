@@ -8,4 +8,6 @@ import java.util.stream.Stream;
 
 public interface QuestionRepository extends CrudRepository<QuestionEntity, Long> {
     Stream<QuestionEntity> streamAllBy();
+
+    QuestionEntity findByTitle(String title);
 }

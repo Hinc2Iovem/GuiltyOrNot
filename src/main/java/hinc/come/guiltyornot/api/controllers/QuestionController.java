@@ -7,9 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Stream;
 
@@ -27,6 +25,16 @@ public class QuestionController {
         try {
             Stream<QuestionEntity> questions = questionService.getQuestions();
             return ResponseEntity.ok().body(questions);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity createQuestion(@RequestBody QuestionEntity questionBody) {
+        try {
+            QuestionEntity question = questionService.createQuestion(questionBody);
+            return ResponseEntity.ok().body(question);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
         }

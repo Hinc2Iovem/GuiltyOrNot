@@ -20,10 +20,8 @@ public class QuestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @NonNull
     String text;
 
-    @NonNull
     String title;
 
     @Builder.Default
