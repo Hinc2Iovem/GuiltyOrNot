@@ -10,5 +10,5 @@ import java.util.stream.Stream;
 public interface MissionRepository extends CrudRepository<MissionEntity, Long> {
     Stream<MissionEntity> streamAllBy();
 
-    boolean findByTitle(String title);
+    MissionEntity findByTitle(String title);
 }

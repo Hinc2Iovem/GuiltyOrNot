@@ -3,6 +3,7 @@ package hinc.come.guiltyornot.api.services;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
+import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.api.models.Mission;
 import hinc.come.guiltyornot.store.entities.MissionEntity;
 import hinc.come.guiltyornot.store.entities.UserEntity;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -34,7 +36,7 @@ public class MissionService {
         return optionalMission.get();
     }
 
-    public MissionEntity createMission(MissionEntity missionBody) throws MissingCredentials, BadRequestException {
+    public MissionEntity createMission(MissionEntity missionBody) throws MissingCredentials, BadRequestException, UserAlreadyExistException {
         if (
             missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
             missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
@@ -44,10 +46,8 @@ public class MissionService {
             throw new MissingCredentials("Description, title, defeatExp, defeatMoney, rewardExp and rewardMoney are required");
         }
 
-        boolean duplicate = missionRepository.findByTitle(missionBody.getTitle());
-
-        if(duplicate){
-            throw new BadRequestException("Mission with such title already exists");
+        if (missionRepository.findByTitle(missionBody.getTitle()) != null){
+            throw new UserAlreadyExistException("Note with such title already exist");
         }
 
         return missionRepository.save(missionBody);
