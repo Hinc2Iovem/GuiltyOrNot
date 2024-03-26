@@ -57,5 +57,18 @@ public class MissionController {
         }
     }
 
+    @PatchMapping(SINGLE_MISSION)
+    public ResponseEntity updateMission(
+            @RequestBody MissionEntity missionBody,
+            @PathVariable(name = "missionId") Long missionId
+    ) {
+        try {
+            MissionEntity mission = missionService.updateMission(missionBody, missionId);
+            return ResponseEntity.ok().body(mission);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("Something went wrong");
+        }
+    }
+
 
 }

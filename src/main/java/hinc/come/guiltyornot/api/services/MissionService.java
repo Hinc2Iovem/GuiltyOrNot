@@ -5,6 +5,7 @@ import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.Mission;
 import hinc.come.guiltyornot.store.entities.MissionEntity;
+import hinc.come.guiltyornot.store.entities.UserEntity;
 import hinc.come.guiltyornot.store.repositories.MissionRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -50,5 +51,37 @@ public class MissionService {
         }
 
         return missionRepository.save(missionBody);
+    }
+
+    public MissionEntity updateMission(MissionEntity missionBody, Long missionId) throws NotFoundException {
+        Optional<MissionEntity> missionOptional = missionRepository.findById(missionId);
+        if (missionOptional.isEmpty()){
+            throw new NotFoundException("User with such id doesn't exist");
+        }
+        MissionEntity existingMission = missionOptional.get();
+
+        if(missionBody.getRewardMoney() != null){
+            existingMission.setRewardMoney(missionBody.getRewardMoney());
+        }
+        if(missionBody.getRewardExp() != null){
+            existingMission.setRewardExp(missionBody.getRewardExp());
+        }
+        if(missionBody.getTitle() != null){
+            existingMission.setTitle(missionBody.getTitle());
+        }
+        if(missionBody.getDescription() != null){
+            existingMission.setDescription(missionBody.getDescription());
+        }
+        if(missionBody.getDefeatExp() != null){
+            existingMission.setDefeatExp(missionBody.getDefeatExp());
+        }
+        if(missionBody.getDefeatMoney() != null){
+            existingMission.setDefeatMoney(missionBody.getDefeatMoney());
+        }
+        if(missionBody.getLevelOfDifficulty() != null){
+            existingMission.setLevelOfDifficulty(missionBody.getLevelOfDifficulty());
+        }
+
+        return missionRepository.save(existingMission);
     }
 }
