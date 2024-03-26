@@ -5,5 +5,10 @@ import hinc.come.guiltyornot.store.entities.MissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.stream.Stream;
+
 public interface MissionRepository extends CrudRepository<MissionEntity, Long> {
+    Stream<MissionEntity> streamAllBy();
+
+    boolean findByTitle(String title);
 }

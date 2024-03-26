@@ -24,10 +24,10 @@ public class Mission {
         model.setId(entity.getId());
         model.setTitle(entity.getTitle());
         model.setDescription(entity.getDescription());
-        model.setDefeatExp(entity.getDefeat_exp());
-        model.setDefeatMoney(entity.getDefeat_money());
-        model.setRewardExp(entity.getReward_exp());
-        model.setRewardMoney(entity.getReward_money());
+        model.setDefeatExp(entity.getDefeatExp());
+        model.setDefeatMoney(entity.getDefeatMoney());
+        model.setRewardExp(entity.getRewardExp());
+        model.setRewardMoney(entity.getRewardMoney());
         model.setLevelOfDifficulty(entity.getLevelOfDifficulty());
         return model;
     }

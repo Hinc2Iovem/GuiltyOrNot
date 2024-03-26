@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.controllers;
 
+import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.User;
 import hinc.come.guiltyornot.api.services.UserService;
 import hinc.come.guiltyornot.store.entities.UserEntity;
@@ -30,6 +31,8 @@ public class UserController {
         try {
             UserEntity updatedUser = userService.updateUser(userId, user);
             return ResponseEntity.ok().body(User.toModel(updatedUser));
+        } catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong");
         }
@@ -42,6 +45,8 @@ public class UserController {
         try {
             userService.deleteUser(userId);
             return ResponseEntity.ok().body("User with id: " + userId + " was deleted");
+        } catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong");
         }
