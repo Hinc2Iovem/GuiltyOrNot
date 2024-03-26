@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
+import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.store.entities.QuestionEntity;
 import hinc.come.guiltyornot.store.repositories.QuestionRepository;
@@ -24,8 +25,12 @@ public class QuestionService {
         return questionRepository.streamAllBy();
     };
 
-    public QuestionEntity getQuestionById(Long questionId) {
-        return null;
+    public QuestionEntity getQuestionById(Long questionId) throws NotFoundException {
+        if(questionRepository.findById(questionId).isEmpty()) {
+            throw new NotFoundException("Question with such Id doesn't exist");
+        }
+
+        return questionRepository.findById(questionId).get();
     }
 
     public QuestionEntity createQuestion(QuestionEntity questionBody) throws UserAlreadyExistException, MissingCredentials {

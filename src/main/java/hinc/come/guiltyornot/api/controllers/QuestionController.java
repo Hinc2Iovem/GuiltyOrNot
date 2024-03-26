@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.api.controllers;
 
 import hinc.come.guiltyornot.api.services.QuestionService;
+import hinc.come.guiltyornot.store.entities.MissionEntity;
 import hinc.come.guiltyornot.store.entities.QuestionEntity;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,9 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
+    public static final String SINGLE_QUESTION = "/{questionId}";
+
+
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity getQuestions() {
@@ -27,6 +31,16 @@ public class QuestionController {
             return ResponseEntity.ok().body(questions);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
+        }
+    }
+
+    @GetMapping(SINGLE_QUESTION)
+    public ResponseEntity getQuestionById(@PathVariable(name = "questionId") Long questionId) {
+        try {
+            QuestionEntity question = questionService.getQuestionById(questionId);
+            return ResponseEntity.ok().body(question);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("Something went wrong");
         }
     }
 
