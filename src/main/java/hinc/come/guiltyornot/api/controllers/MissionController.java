@@ -71,4 +71,13 @@ public class MissionController {
     }
 
 
+    @DeleteMapping(SINGLE_MISSION)
+    public ResponseEntity deleteMission(@PathVariable(name = "missionId") Long missionId) {
+        try {
+            missionService.deleteMission(missionId);
+            return ResponseEntity.ok("Mission with id: " + missionId + " was deleted");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("Something went wrong");
+        }
+    }
 }

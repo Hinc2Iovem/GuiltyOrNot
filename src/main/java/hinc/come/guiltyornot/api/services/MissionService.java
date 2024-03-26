@@ -56,7 +56,7 @@ public class MissionService {
     public MissionEntity updateMission(MissionEntity missionBody, Long missionId) throws NotFoundException {
         Optional<MissionEntity> missionOptional = missionRepository.findById(missionId);
         if (missionOptional.isEmpty()){
-            throw new NotFoundException("User with such id doesn't exist");
+            throw new NotFoundException("Mission with such id doesn't exist");
         }
         MissionEntity existingMission = missionOptional.get();
 
@@ -83,5 +83,11 @@ public class MissionService {
         }
 
         return missionRepository.save(existingMission);
+    }
+
+    public void deleteMission(Long missionId) throws NotFoundException {
+        if(missionRepository.findById(missionId).isEmpty()){
+            throw new NotFoundException("Mission with such id doesn't exist");
+        }
     }
 }
