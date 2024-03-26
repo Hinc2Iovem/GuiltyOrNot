@@ -1,8 +1,11 @@
 package hinc.come.guiltyornot.store.repositories;
 
 import hinc.come.guiltyornot.store.entities.AnswerEntity;
+import hinc.come.guiltyornot.store.entities.QuestionEntity;
 import org.springframework.data.repository.CrudRepository;
 
-public interface QuestionRepository extends CrudRepository<AnswerEntity, Long> {
+import java.util.stream.Stream;
 
+public interface QuestionRepository extends CrudRepository<QuestionEntity, Long> {
+    Stream<QuestionEntity> streamAllBy();
 }

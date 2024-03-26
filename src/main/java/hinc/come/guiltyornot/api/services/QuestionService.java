@@ -19,7 +19,7 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Stream<QuestionEntity> getQuestions() {
-        return null;
+        return questionRepository.streamAllBy();
     };
 
     public QuestionEntity getQuestionById(Long questionId) {
