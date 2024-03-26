@@ -2,6 +2,7 @@ package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
+import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.Mission;
 import hinc.come.guiltyornot.store.entities.MissionEntity;
 import hinc.come.guiltyornot.store.repositories.MissionRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -21,6 +23,14 @@ public class MissionService {
 
     public Stream<MissionEntity> getMissions() {
         return missionRepository.streamAllBy();
+    }
+
+    public MissionEntity getMissionById(Long missionId) throws NotFoundException {
+        Optional<MissionEntity> optionalMission = missionRepository.findById(missionId);
+        if (optionalMission.isEmpty()) {
+            throw new NotFoundException("Mission with such id wasn't found");
+        }
+        return optionalMission.get();
     }
 
     public MissionEntity createMission(MissionEntity missionBody) throws MissingCredentials, BadRequestException {

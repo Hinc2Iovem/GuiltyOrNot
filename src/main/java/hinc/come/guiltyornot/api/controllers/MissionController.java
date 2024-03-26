@@ -21,12 +21,25 @@ public class MissionController {
     @Autowired
     MissionService missionService;
 
-//    public static final String SIGN_UP = "/registration";
+    public static final String SINGLE_MISSION = "/{missionId}";
+
     @GetMapping
     public ResponseEntity getMissions(){
         try {
             Stream<MissionEntity> missions = missionService.getMissions();
             return ResponseEntity.ok().body(missions);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("Something went wrong");
+        }
+    }
+
+    @GetMapping(SINGLE_MISSION)
+    public ResponseEntity getMissionById(
+            @PathVariable(name = "missionId") Long missionId
+    ) {
+        try {
+            MissionEntity mission = missionService.getMissionById(missionId);
+            return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             return ResponseEntity.badRequest().body("Something went wrong");
         }
@@ -43,4 +56,6 @@ public class MissionController {
             return ResponseEntity.badRequest().body("Something went wrong");
         }
     }
+
+
 }
