@@ -30,7 +30,7 @@ public class QuestionController {
             Stream<QuestionEntity> questions = questionService.getQuestions();
             return ResponseEntity.ok().body(questions);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
+            return ResponseEntity.badRequest().body("Something went wrong " + e.getMessage());
         }
     }
 
@@ -50,7 +50,32 @@ public class QuestionController {
             QuestionEntity question = questionService.createQuestion(questionBody);
             return ResponseEntity.ok().body(question);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
+            return ResponseEntity.badRequest().body("Something went wrong " + e.getMessage());
+        }
+    }
+
+    @PatchMapping(SINGLE_QUESTION)
+    public ResponseEntity updateQuestion(
+            @RequestBody QuestionEntity questionBody,
+            @PathVariable(name = "questionId") Long questionId
+    ) {
+        try {
+            QuestionEntity question = questionService.updateQuestion(questionBody, questionId);
+            return ResponseEntity.ok().body(question);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Something went wrong " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping(SINGLE_QUESTION)
+    public ResponseEntity deleteQuestion(
+            @PathVariable(name = "questionId") Long questionId
+    ) {
+        try {
+            questionService.deleteQuestion(questionId);
+            return ResponseEntity.ok("Question with id: " + questionId + " was deleted");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Something went wrong " + e.getMessage());
         }
     }
 }

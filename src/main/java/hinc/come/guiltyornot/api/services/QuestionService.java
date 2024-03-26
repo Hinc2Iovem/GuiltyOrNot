@@ -48,9 +48,26 @@ public class QuestionService {
     public QuestionEntity updateQuestion(
             QuestionEntity questionBody,
             Long questionId
-    ) {
-        return null;
+    ) throws NotFoundException {
+        if(questionRepository.findById(questionId).isEmpty()){
+            throw new NotFoundException("Question with such Id doesn't exist");
+        }
+        QuestionEntity existingQuestion = questionRepository.findById(questionId).get();
+        if(questionBody.getText() != null){
+            existingQuestion.setText(questionBody.getText());
+        }
+        if(questionBody.getTitle() != null){
+            existingQuestion.setTitle(questionBody.getTitle());
+        }
+
+        return questionRepository.save(existingQuestion);
     }
 
-    public void deleteQuestion(Long questionId) {}
+    public void deleteQuestion(Long questionId) throws NotFoundException {
+        if(questionRepository.findById(questionId).isEmpty()){
+            throw new NotFoundException("Question with such Id doesn't exist");
+        }
+
+        questionRepository.deleteById(questionId);
+    }
 }
