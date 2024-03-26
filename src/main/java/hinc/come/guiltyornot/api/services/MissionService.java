@@ -91,5 +91,6 @@ public class MissionService {
         if(missionRepository.findById(missionId).isEmpty()){
             throw new NotFoundException("Mission with such id doesn't exist");
         }
+        missionRepository.deleteById(missionId);
     }
 }
