@@ -34,7 +34,7 @@ public class SucceededMissionService {
             Long userId,
             SucceededMissionEntity succeededMissionBody
             ) {
-//            if(succeededMissionBody.)
+//            if(succeededMissionBody)
         return null;
     }
 }

@@ -33,7 +33,7 @@ public class AuthController {
         } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong");
+            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
         }
     }
 

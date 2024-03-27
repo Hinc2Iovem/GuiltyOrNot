@@ -19,6 +19,7 @@ public class User {
     Integer exp;
     Integer money;
 
+//    Do I need to add succeededMissions and failedMissions here?
     public static User toModel(UserEntity entity) {
         User model = new User();
         model.setId(entity.getId());
