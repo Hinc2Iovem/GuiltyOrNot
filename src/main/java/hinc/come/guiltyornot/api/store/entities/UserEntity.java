@@ -29,12 +29,6 @@ public class UserEntity {
     String password;
 
     @Builder.Default
-    Integer exp = 0;
-
-    @Builder.Default
-    Integer money = 0;
-
-    @Builder.Default
     @OneToMany(mappedBy = "user")
     List<FailedMissionEntity> failedMissions = new ArrayList<>();
 
