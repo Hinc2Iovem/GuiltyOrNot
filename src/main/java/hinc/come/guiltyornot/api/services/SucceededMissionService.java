@@ -46,7 +46,7 @@ public class SucceededMissionService {
             UserEntity currentUser = userRepository.findById(userId).get();
             MissionEntity currentMission = missionRepository.findById(missionId).get();
 
-            succeededMissionRepository.save(currentUser);
+//            succeededMissionRepository.save(currentUser);
         return null;
     }
 }

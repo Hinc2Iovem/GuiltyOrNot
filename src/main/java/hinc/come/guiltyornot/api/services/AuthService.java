@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.services;
 
+import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
@@ -10,6 +11,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -28,6 +31,9 @@ public class AuthService {
             user.getRole() == null || user.getRole().isEmpty()) {
             throw new MissingCredentialsException("All fields required: username, password, role");
         }
+
+
+
         return userRepository.save(user);
     }
 

@@ -35,12 +35,7 @@ public class UserService {
         if(user.getPassword() != null){
             existingUser.setPassword(user.getPassword());
         }
-        if(user.getExp() != null){
-            existingUser.setExp(user.getExp());
-        }
-        if(user.getMoney() != null){
-            existingUser.setMoney(user.getMoney());
-        }
+
         if(user.getRole() != null){
             existingUser.setRole(user.getRole());
         }

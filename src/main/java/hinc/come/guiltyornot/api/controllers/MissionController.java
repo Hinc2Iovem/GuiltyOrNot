@@ -1,7 +1,7 @@
 package hinc.come.guiltyornot.api.controllers;
 
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
-import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
+import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.services.MissionService;
 import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import lombok.AccessLevel;
@@ -51,7 +51,7 @@ public class MissionController {
         try {
             MissionEntity mission = missionService.createMission(missionBody);
             return ResponseEntity.ok().body(mission);
-        } catch (MissingCredentials | BadRequestException e){
+        } catch (MissingCredentialsException | BadRequestException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());

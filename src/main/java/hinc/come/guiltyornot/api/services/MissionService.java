@@ -1,7 +1,7 @@
 package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
-import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
+import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.api.store.entities.MissionEntity;
@@ -34,14 +34,14 @@ public class MissionService {
         return optionalMission.get();
     }
 
-    public MissionEntity createMission(MissionEntity missionBody) throws MissingCredentials, BadRequestException, UserAlreadyExistException {
+    public MissionEntity createMission(MissionEntity missionBody) throws MissingCredentialsException, BadRequestException, UserAlreadyExistException {
         if (
             missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
             missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
             missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
             missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0
         ) {
-            throw new MissingCredentials("Description, title, defeatExp, defeatMoney, rewardExp and rewardMoney are required");
+            throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp and rewardMoney are required");
         }
 
         if (missionRepository.findByTitle(missionBody.getTitle()) != null){

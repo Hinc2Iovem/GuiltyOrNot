@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.controllers;
 
+import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
@@ -30,25 +31,28 @@ public class AuthController {
     public ResponseEntity<User> registration(@RequestBody UserEntity user) throws UserAlreadyExistException, BadRequestException, MissingCredentialsException {
         try {
             UserEntity createdUser = authService.registration(user);
+            UserRoles.valueOf(user.getRole().toUpperCase());
             return ResponseEntity.ok().body(User.toModel(createdUser));
         } catch (UserAlreadyExistException e) {
             throw new UserAlreadyExistException("Something went wrong: " + e.getMessage());
         } catch (MissingCredentialsException e) {
             throw new MissingCredentialsException("Something went wrong: " + e.getMessage());
+        }  catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role value. Role may be detective, guilty or not_guilty");
         } catch (Exception e) {
             throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
     @PostMapping
-    public ResponseEntity login(@RequestBody UserEntity user) {
+    public ResponseEntity<User> login(@RequestBody UserEntity user) throws BadRequestException, NotFoundException {
         try {
             UserEntity currentUser = authService.login(user);
             return ResponseEntity.ok().body(User.toModel(currentUser));
         } catch (NotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new NotFoundException("Something went wrong: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong");
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 }
