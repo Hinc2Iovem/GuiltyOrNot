@@ -1,5 +1,7 @@
 package hinc.come.guiltyornot.api.controllers;
 
+import hinc.come.guiltyornot.api.exceptions.BadRequestException;
+import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.api.models.User;
@@ -25,14 +27,16 @@ public class AuthController {
     public static final String SIGN_UP = "/registration";
 
     @PostMapping(SIGN_UP)
-    public ResponseEntity registration(@RequestBody UserEntity user) {
+    public ResponseEntity<User> registration(@RequestBody UserEntity user) throws UserAlreadyExistException, BadRequestException, MissingCredentialsException {
         try {
-            authService.registration(user);
-            return ResponseEntity.ok().body(User.toModel(user));
+            UserEntity createdUser = authService.registration(user);
+            return ResponseEntity.ok().body(User.toModel(createdUser));
         } catch (UserAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new UserAlreadyExistException("Something went wrong: " + e.getMessage());
+        } catch (MissingCredentialsException e) {
+            throw new MissingCredentialsException("Something went wrong: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
