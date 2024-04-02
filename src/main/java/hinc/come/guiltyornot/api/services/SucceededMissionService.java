@@ -1,8 +1,10 @@
 package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
+import hinc.come.guiltyornot.store.entities.MissionEntity;
 import hinc.come.guiltyornot.store.entities.SucceededMissionEntity;
 import hinc.come.guiltyornot.store.entities.UserEntity;
+import hinc.come.guiltyornot.store.repositories.MissionRepository;
 import hinc.come.guiltyornot.store.repositories.SucceededMissionRepository;
 import hinc.come.guiltyornot.store.repositories.UserRepository;
 import lombok.AccessLevel;
@@ -22,6 +24,9 @@ public class SucceededMissionService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    MissionRepository missionRepository;
+
     @Transactional(readOnly = true)
     public Stream<SucceededMissionEntity> getSucceededMissionsByUserId(Long userId) throws NotFoundException {
 //        if(succeededMissionRepository.findById(userId).isEmpty()){
@@ -32,9 +37,16 @@ public class SucceededMissionService {
 
     public SucceededMissionEntity createSucceededMissionsByUserId(
             Long userId,
+            Long missionId,
             SucceededMissionEntity succeededMissionBody
-            ) {
-//            if(succeededMissionBody)
+            ) throws NotFoundException {
+            if(userRepository.findById(userId).isEmpty() || missionRepository.findById(missionId).isEmpty()){
+                throw new NotFoundException("User or Mission with such id doesn't exist");
+            }
+            UserEntity currentUser = userRepository.findById(userId).get();
+            MissionEntity currentMission = missionRepository.findById(missionId).get();
+
+            succeededMissionRepository.save(currentUser);
         return null;
     }
 }

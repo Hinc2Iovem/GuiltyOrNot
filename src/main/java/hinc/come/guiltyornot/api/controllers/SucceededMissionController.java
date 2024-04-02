@@ -34,10 +34,11 @@ public class SucceededMissionController {
     @PostMapping
     public ResponseEntity createSucceededMissionsByUserId(
             @PathVariable(name = "userId") Long userId,
-            @RequestBody SucceededMissionEntity succeededMissionBody
+            @RequestBody SucceededMissionEntity succeededMissionBody,
+            @RequestBody Long missionId
     ) {
         try {
-            SucceededMissionEntity succededMission = succeededMissionService.createSucceededMissionsByUserId(userId, succeededMissionBody);
+            SucceededMissionEntity succededMission = succeededMissionService.createSucceededMissionsByUserId(userId, missionId, succeededMissionBody);
             return ResponseEntity.ok().body(succededMission);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());

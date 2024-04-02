@@ -17,10 +17,6 @@ import java.util.List;
 @Entity
 @Table(name = "failed_mission")
 public class FailedMissionEntity {
-
-    @Builder.Default
-    Integer points = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

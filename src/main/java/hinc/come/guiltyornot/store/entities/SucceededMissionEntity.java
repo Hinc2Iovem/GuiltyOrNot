@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.store.entities;
 
 
+import hinc.come.guiltyornot.api.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -18,8 +20,6 @@ import java.util.List;
 @Entity
 @Table(name = "succeeded_mission")
 public class SucceededMissionEntity {
-    @Builder.Default
-    Integer points = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
