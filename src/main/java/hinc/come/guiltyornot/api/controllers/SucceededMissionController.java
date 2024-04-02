@@ -1,7 +1,7 @@
 package hinc.come.guiltyornot.api.controllers;
 
 import hinc.come.guiltyornot.api.services.SucceededMissionService;
-import hinc.come.guiltyornot.store.entities.SucceededMissionEntity;
+import hinc.come.guiltyornot.api.store.entities.SucceededMissionEntity;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;

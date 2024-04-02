@@ -1,11 +1,9 @@
-package hinc.come.guiltyornot.store.entities;
+package hinc.come.guiltyornot.api.store.entities;
 
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -14,16 +12,18 @@ import java.time.Instant;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "question")
-public class QuestionEntity {
+@Table(name = "succeeded_mission")
+public class SucceededMissionEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String text;
+    @ManyToOne
+    @JoinColumn(name = "mission_id")
+    MissionEntity mission;
 
-    String title;
-
-    @Builder.Default
-    Instant time = Instant.now();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    UserEntity user;
 }

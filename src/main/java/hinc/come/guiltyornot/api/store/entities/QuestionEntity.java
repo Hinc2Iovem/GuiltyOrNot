@@ -1,4 +1,4 @@
-package hinc.come.guiltyornot.store.entities;
+package hinc.come.guiltyornot.api.store.entities;
 
 
 import jakarta.persistence.*;
@@ -14,20 +14,15 @@ import java.time.Instant;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "answer")
-public class AnswerEntity {
+@Table(name = "question")
+public class QuestionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @NonNull
     String text;
 
-    @NonNull
-    String type;
-
-    @Builder.Default
-    Integer points = 0;
+    String title;
 
     @Builder.Default
     Instant time = Instant.now();

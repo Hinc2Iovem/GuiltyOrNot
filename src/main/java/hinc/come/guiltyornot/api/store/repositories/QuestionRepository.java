@@ -1,7 +1,6 @@
-package hinc.come.guiltyornot.store.repositories;
+package hinc.come.guiltyornot.api.store.repositories;
 
-import hinc.come.guiltyornot.store.entities.AnswerEntity;
-import hinc.come.guiltyornot.store.entities.QuestionEntity;
+import hinc.come.guiltyornot.api.store.entities.QuestionEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.stream.Stream;

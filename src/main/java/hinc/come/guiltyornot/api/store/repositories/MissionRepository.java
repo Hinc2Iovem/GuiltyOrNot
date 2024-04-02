@@ -1,8 +1,6 @@
-package hinc.come.guiltyornot.store.repositories;
+package hinc.come.guiltyornot.api.store.repositories;
 
-import hinc.come.guiltyornot.store.entities.FailedMissionEntity;
-import hinc.come.guiltyornot.store.entities.MissionEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.stream.Stream;

@@ -4,18 +4,14 @@ import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
-import hinc.come.guiltyornot.api.models.Mission;
-import hinc.come.guiltyornot.store.entities.MissionEntity;
-import hinc.come.guiltyornot.store.entities.UserEntity;
-import hinc.come.guiltyornot.store.repositories.MissionRepository;
+import hinc.come.guiltyornot.api.store.entities.MissionEntity;
+import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 

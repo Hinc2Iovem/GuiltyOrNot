@@ -3,15 +3,12 @@ package hinc.come.guiltyornot.api.controllers;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.User;
 import hinc.come.guiltyornot.api.services.UserService;
-import hinc.come.guiltyornot.store.entities.UserEntity;
-import jakarta.transaction.Transactional;
+import hinc.come.guiltyornot.api.store.entities.UserEntity;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController

@@ -1,13 +1,10 @@
 package hinc.come.guiltyornot.api.models;
 
-import hinc.come.guiltyornot.store.entities.SucceededMissionEntity;
-import hinc.come.guiltyornot.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.store.entities.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Getter
 @Setter

@@ -1,6 +1,6 @@
 package hinc.come.guiltyornot.api.models;
 
-import hinc.come.guiltyornot.store.entities.AnswerEntity;
+import hinc.come.guiltyornot.api.store.entities.AnswerEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

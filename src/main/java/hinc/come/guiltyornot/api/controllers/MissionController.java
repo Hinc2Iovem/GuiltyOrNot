@@ -3,12 +3,11 @@ package hinc.come.guiltyornot.api.controllers;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentials;
 import hinc.come.guiltyornot.api.services.MissionService;
-import hinc.come.guiltyornot.store.entities.MissionEntity;
+import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 

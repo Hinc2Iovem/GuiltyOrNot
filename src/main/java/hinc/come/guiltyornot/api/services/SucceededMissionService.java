@@ -1,12 +1,12 @@
 package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
-import hinc.come.guiltyornot.store.entities.MissionEntity;
-import hinc.come.guiltyornot.store.entities.SucceededMissionEntity;
-import hinc.come.guiltyornot.store.entities.UserEntity;
-import hinc.come.guiltyornot.store.repositories.MissionRepository;
-import hinc.come.guiltyornot.store.repositories.SucceededMissionRepository;
-import hinc.come.guiltyornot.store.repositories.UserRepository;
+import hinc.come.guiltyornot.api.store.entities.MissionEntity;
+import hinc.come.guiltyornot.api.store.entities.SucceededMissionEntity;
+import hinc.come.guiltyornot.api.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
+import hinc.come.guiltyornot.api.store.repositories.SucceededMissionRepository;
+import hinc.come.guiltyornot.api.store.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;

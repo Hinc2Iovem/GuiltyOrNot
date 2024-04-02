@@ -1,15 +1,9 @@
-package hinc.come.guiltyornot.store.entities;
+package hinc.come.guiltyornot.api.store.entities;
 
 
-import hinc.come.guiltyornot.api.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -18,9 +12,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "succeeded_mission")
-public class SucceededMissionEntity {
-
+@Table(name = "failed_mission")
+public class FailedMissionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

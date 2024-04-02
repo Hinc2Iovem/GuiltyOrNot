@@ -1,11 +1,10 @@
-package hinc.come.guiltyornot.store.entities;
+package hinc.come.guiltyornot.api.store.entities;
 
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,40 +15,30 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "mission")
-public class MissionEntity {
+@Table(name = "user")
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(unique = true)
-    String title;
+    String username;
 
-    String description;
+    String role;
 
-    @Builder.Default
-    Integer levelOfDifficulty = 1;
-
-    @Builder.Default
-    Integer rewardExp = 0;
+    String password;
 
     @Builder.Default
-    Integer rewardMoney = 0;
+    Integer exp = 0;
 
     @Builder.Default
-    Integer defeatExp = 0;
+    Integer money = 0;
 
     @Builder.Default
-    Integer defeatMoney = 0;
-
-    @Builder.Default
-    Instant createdAt = Instant.now();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "mission")
+    @OneToMany(mappedBy = "user")
     List<FailedMissionEntity> failedMissions = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "mission")
+    @OneToMany(mappedBy = "user")
     List<SucceededMissionEntity> succeededMissions = new ArrayList<>();
 }
