@@ -36,6 +36,21 @@ public class UserController {
         }
     }
 
+    @PatchMapping(UPDATE_DELETE_USER)
+    public ResponseEntity<User> updateUserPassword(
+            @PathVariable(name = "userId") Long userId,
+            @RequestBody String userName
+    ) throws NotFoundException, BadRequestException {
+        try {
+            UserEntity updatedUser = userService.updateUserPassword(userId, userName);
+            return ResponseEntity.ok().body(User.toModel(updatedUser));
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Something went wrong: " + e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
+        }
+    }
+
     @DeleteMapping(UPDATE_DELETE_USER)
     public ResponseEntity deleteUser(
             @PathVariable(name = "userId") Long userId

@@ -33,12 +33,30 @@ public class UserService {
         if(!userName.trim().isEmpty()){
             existingUser.setUsername(userName);
         }
+
+        return userRepository.save(existingUser);
 //        if(user.getPassword() != null){
 //            existingUser.setPassword(user.getPassword());
 //        }
 //        if(user.getRole() != null){
 //            existingUser.setRole(user.getRole());
 //        }
+    }
+
+    public UserEntity updateUserPassword(
+            Long userId,
+            @RequestBody String userPassword
+    ) throws NotFoundException {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()){
+            throw new NotFoundException("User with such id doesn't exist");
+        }
+
+        UserEntity existingUser = userOptional.get();
+
+        if(!userPassword.trim().isEmpty()){
+            existingUser.setPassword(userPassword);
+        }
 
         return userRepository.save(existingUser);
     }
