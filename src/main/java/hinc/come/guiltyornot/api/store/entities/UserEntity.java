@@ -32,4 +32,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     List<MissionEntity> missions = new ArrayList<>();
+
+
 }

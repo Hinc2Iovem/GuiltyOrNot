@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
+import hinc.come.guiltyornot.api.store.entities.DetectiveEntity;
 import hinc.come.guiltyornot.api.store.entities.UserEntity;
 import hinc.come.guiltyornot.api.store.repositories.UserRepository;
 import lombok.AccessLevel;
@@ -18,9 +19,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public UserEntity updateUser(
+    public UserEntity updateUserLogin(
             Long userId,
-            @RequestBody UserEntity user
+            @RequestBody String userName
     ) throws NotFoundException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()){
@@ -29,16 +30,15 @@ public class UserService {
 
         UserEntity existingUser = userOptional.get();
 
-        if(user.getUsername() != null){
-            existingUser.setUsername(user.getUsername());
+        if(!userName.trim().isEmpty()){
+            existingUser.setUsername(userName);
         }
-        if(user.getPassword() != null){
-            existingUser.setPassword(user.getPassword());
-        }
-
-        if(user.getRole() != null){
-            existingUser.setRole(user.getRole());
-        }
+//        if(user.getPassword() != null){
+//            existingUser.setPassword(user.getPassword());
+//        }
+//        if(user.getRole() != null){
+//            existingUser.setRole(user.getRole());
+//        }
 
         return userRepository.save(existingUser);
     }

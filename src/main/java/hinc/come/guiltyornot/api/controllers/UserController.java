@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.controllers;
 
+import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.User;
 import hinc.come.guiltyornot.api.services.UserService;
@@ -21,17 +22,17 @@ public class UserController {
     public static final String UPDATE_DELETE_USER = "/{userId}";
 
     @PatchMapping(UPDATE_DELETE_USER)
-    public ResponseEntity updateUser(
+    public ResponseEntity<User> updateUserLogin(
             @PathVariable(name = "userId") Long userId,
-            @RequestBody UserEntity user
-            ) {
+            @RequestBody String userName
+            ) throws NotFoundException, BadRequestException {
         try {
-            UserEntity updatedUser = userService.updateUser(userId, user);
+            UserEntity updatedUser = userService.updateUserLogin(userId, userName);
             return ResponseEntity.ok().body(User.toModel(updatedUser));
         } catch (NotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new NotFoundException("Something went wrong: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong");
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
