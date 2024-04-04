@@ -46,6 +46,16 @@ public class MissionEntity {
     Instant createdAt = Instant.now();
 
     @Builder.Default
+    Boolean isFinished = false;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    UserEntity user;
+
+    @Column(name = "user_id", updatable = false, insertable = false)
+    Long userId;
+
+    @Builder.Default
     @OneToMany(mappedBy = "mission")
     List<FailedMissionEntity> failedMissions = new ArrayList<>();
 

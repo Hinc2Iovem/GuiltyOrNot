@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
 

@@ -30,9 +30,6 @@ public class UserEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<FailedMissionEntity> failedMissions = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "user")
-    List<SucceededMissionEntity> succeededMissions = new ArrayList<>();
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    List<MissionEntity> missions = new ArrayList<>();
 }

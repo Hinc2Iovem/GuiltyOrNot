@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     @Autowired
