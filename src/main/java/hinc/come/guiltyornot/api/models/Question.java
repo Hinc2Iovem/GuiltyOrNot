@@ -7,12 +7,15 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Question {
     Long id;
+    Long missionId;
     String title;
     String text;
     Instant time;
@@ -23,6 +26,11 @@ public class Question {
         model.setText(entity.getText());
         model.setTitle(entity.getTitle());
         model.setTime(entity.getTime());
+        model.setMissionId(entity.getMissionId());
         return model;
+    }
+
+    public static List<Question> toModelList(List<QuestionEntity> entities) {
+        return entities.stream().map(Question::toModel).collect(Collectors.toList());
     }
 }

@@ -3,14 +3,20 @@ package hinc.come.guiltyornot.api.services;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
+import hinc.come.guiltyornot.api.models.Question;
+import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import hinc.come.guiltyornot.api.store.entities.QuestionEntity;
+import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
 import hinc.come.guiltyornot.api.store.repositories.QuestionRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -20,10 +26,24 @@ public class QuestionService {
     @Autowired
     QuestionRepository questionRepository;
 
+    @Autowired
+    MissionRepository missionRepository;
+
     @Transactional(readOnly = true)
-    public Stream<QuestionEntity> getQuestions() {
-        return questionRepository.streamAllBy();
+    public List<QuestionEntity> getQuestions() {
+        return questionRepository.streamAllBy().toList();
     };
+
+    public List<QuestionEntity> getQuestionsByMissionId(
+            Long missionId
+    ) throws NotFoundException {
+       List<QuestionEntity> questionsByMissionId = questionRepository.findAllByMissionId(missionId);
+       if(questionsByMissionId.isEmpty()) {
+        throw new NotFoundException("There are no questions for mission with id: " + missionId);
+       }
+
+       return questionsByMissionId;
+    }
 
     public QuestionEntity getQuestionById(Long questionId) throws NotFoundException {
         if(questionRepository.findById(questionId).isEmpty()) {
@@ -33,16 +53,28 @@ public class QuestionService {
         return questionRepository.findById(questionId).get();
     }
 
-    public QuestionEntity createQuestion(QuestionEntity questionBody) throws UserAlreadyExistException, MissingCredentialsException {
+    public QuestionEntity createQuestion(QuestionEntity questionBody) throws UserAlreadyExistException, MissingCredentialsException, NotFoundException {
         if(questionRepository.findByTitle(questionBody.getTitle()) != null) {
             throw new UserAlreadyExistException("Such question already exists");
         }
 
-        if(questionBody.getTitle().isEmpty() || questionBody.getText().isEmpty()){
-            throw new MissingCredentialsException("Title and text are required");
+        if(questionBody.getTitle().isEmpty() || questionBody.getText().isEmpty() || questionBody.getMissionId() == null){
+            throw new MissingCredentialsException("Title, text and missionId are required");
         }
 
-        return questionRepository.save(questionBody);
+        if(missionRepository.findById(questionBody.getMissionId()).isEmpty()){
+            throw new NotFoundException("Mission with such id doesn't exist.");
+        }
+
+        MissionEntity currentMission = missionRepository.findById(questionBody.getMissionId()).get();
+        QuestionEntity currentQuestion = new QuestionEntity();
+
+
+        currentQuestion.setMission(currentMission);
+        currentQuestion.setMissionId(currentMission.getId());
+        currentQuestion.setText(questionBody.getText());
+        currentQuestion.setTitle(questionBody.getTitle());
+        return questionRepository.save(currentQuestion);
     }
 
     public QuestionEntity updateQuestion(

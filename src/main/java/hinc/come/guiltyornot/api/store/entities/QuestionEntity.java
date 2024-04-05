@@ -26,4 +26,11 @@ public class QuestionEntity {
 
     @Builder.Default
     Instant time = Instant.now();
+
+    @ManyToOne
+    @JoinColumn(name = "mission_id", referencedColumnName = "id")
+    MissionEntity mission;
+
+    @Column(name = "mission_id", updatable = false, insertable = false)
+    Long missionId;
 }
