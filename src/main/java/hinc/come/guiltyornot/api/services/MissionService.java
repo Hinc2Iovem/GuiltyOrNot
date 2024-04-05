@@ -44,6 +44,14 @@ public class MissionService {
             throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp and rewardMoney are required");
         }
 
+        int levelOfDifficulty;
+        if(missionBody.getLevelOfDifficulty() != null) {
+            levelOfDifficulty = missionBody.getLevelOfDifficulty();
+            if(levelOfDifficulty < 1 || levelOfDifficulty > 5){
+                throw new BadRequestException("Level of difficulty can not be less than 1 or more than 5!");
+            }
+        }
+
         if (missionRepository.findByTitle(missionBody.getTitle()) != null){
             throw new UserAlreadyExistException("Note with such title already exist");
         }
@@ -51,10 +59,10 @@ public class MissionService {
         return missionRepository.save(missionBody);
     }
 
-    public MissionEntity updateMission(MissionEntity missionBody, Long missionId) throws NotFoundException {
+    public MissionEntity updateMission(MissionEntity missionBody, Long missionId) throws NotFoundException, BadRequestException, UserAlreadyExistException {
         Optional<MissionEntity> missionOptional = missionRepository.findById(missionId);
         if (missionOptional.isEmpty()){
-            throw new NotFoundException("Mission with such id doesn't exist");
+            throw new NotFoundException("Mission with such id doesn't exist " + missionId);
         }
         MissionEntity existingMission = missionOptional.get();
 
@@ -65,6 +73,9 @@ public class MissionService {
             existingMission.setRewardExp(missionBody.getRewardExp());
         }
         if(missionBody.getTitle() != null){
+            if (missionRepository.findByTitle(missionBody.getTitle()) != null){
+                throw new UserAlreadyExistException("Note with such title already exist");
+            }
             existingMission.setTitle(missionBody.getTitle());
         }
         if(missionBody.getDescription() != null){
@@ -77,6 +88,9 @@ public class MissionService {
             existingMission.setDefeatMoney(missionBody.getDefeatMoney());
         }
         if(missionBody.getLevelOfDifficulty() != null){
+            if(missionBody.getLevelOfDifficulty() < 1 || missionBody.getLevelOfDifficulty() > 5){
+                throw new BadRequestException("Level of difficulty can not be less than 1 or more than 5!");
+            }
             existingMission.setLevelOfDifficulty(missionBody.getLevelOfDifficulty());
         }
 

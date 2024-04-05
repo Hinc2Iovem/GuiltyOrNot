@@ -102,7 +102,6 @@ public class UserService {
 //                            .filter(m -> m.getId().equals(missionId))
 //                            .findFirst()
 //                            .orElse(null);
-                existingMission.setIsFinished(true);
 
 //                assert currentDetectiveMission != null;
 //                currentDetectiveMission.setIsFinished(true);
@@ -114,7 +113,6 @@ public class UserService {
                 currentGuilty.setMoney(currentGuilty.getMoney() + existingMission.getRewardMoney());
                 currentGuilty.setExp(currentGuilty.getExp() + existingMission.getRewardExp());
 
-                existingMission.setIsFinished(true);
 //                MissionEntity currentGuiltyMission = currentGuilty.getUser()
 //                        .getMissions().stream()
 //                        .filter(m -> m.getId().equals(missionId))

@@ -45,6 +45,4 @@ public class MissionEntity {
     @Builder.Default
     Instant createdAt = Instant.now();
 
-    @Builder.Default
-    Boolean isFinished = false;
 }

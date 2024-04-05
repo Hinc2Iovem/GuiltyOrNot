@@ -42,7 +42,7 @@ public class MissionController {
             MissionEntity mission = missionService.getMissionById(missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong");
+            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class MissionController {
         } catch (MissingCredentialsException | BadRequestException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
+            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
         }
     }
 
@@ -67,7 +67,7 @@ public class MissionController {
             MissionEntity mission = missionService.updateMission(missionBody, missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong");
+            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ public class MissionController {
             missionService.deleteMission(missionId);
             return ResponseEntity.ok("Mission with id: " + missionId + " was deleted");
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong");
+            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
         }
     }
 }
