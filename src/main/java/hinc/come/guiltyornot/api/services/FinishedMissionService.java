@@ -1,5 +1,7 @@
 package hinc.come.guiltyornot.api.services;
 
+import hinc.come.guiltyornot.api.domains.UserRoles;
+import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.store.entities.FinishedMissionDetectiveEntity;
 import hinc.come.guiltyornot.api.store.entities.FinishedMissionGuiltyEntity;
@@ -30,8 +32,9 @@ public class FinishedMissionService {
 
     public String addFinishedMission(
             Long missionId,
-            Long userId
-    ) throws NotFoundException {
+            Long userId,
+            String currentRole
+    ) throws NotFoundException, BadRequestException {
         UserEntity user = userRepository.findById(userId).orElse(null);
         MissionEntity mission = missionRepository.findById(missionId).orElse(null);
 
@@ -39,7 +42,14 @@ public class FinishedMissionService {
             throw new NotFoundException("Mission or user with such id doesn't exist");
         }
 
+        if(currentRole.trim().isEmpty()){
+            throw new NotFoundException("role is required.(detective, guilty)");
+        }
+
         if(mission.getRole().equals("detective")){
+            if(!currentRole.equals("detective")){
+               throw new BadRequestException("You supposed to be a role of detective to finish detective missions.");
+            }
             FinishedMissionDetectiveEntity existingFinishedMission = finishedMissionDetectiveRepository.findByMissionIdAndUserId(mission.getId(), user.getId());
             if(existingFinishedMission != null){
                 return "User with id " + user.getId() + " finished mission with id " + mission.getId() + " repetition";
@@ -51,6 +61,9 @@ public class FinishedMissionService {
 
             finishedMissionDetectiveRepository.save(currentFinishedMission);
         } else if (mission.getRole().equals("guilty")) {
+            if(!currentRole.equals("guilty")){
+                throw new BadRequestException("You supposed to be a role of guilty to finish guilty missions." + currentRole);
+            }
             FinishedMissionGuiltyEntity existingFinishedMission = finishedMissionGuiltyRepository.findByMissionIdAndUserId(mission.getId(), user.getId());
             if(existingFinishedMission != null){
                 return "User with id " + user.getId() + " finished mission with id " + mission.getId() + " repetition";

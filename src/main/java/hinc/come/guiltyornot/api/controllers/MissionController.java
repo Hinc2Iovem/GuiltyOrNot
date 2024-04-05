@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.controllers;
 
+import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.services.MissionService;
@@ -50,6 +51,7 @@ public class MissionController {
     public ResponseEntity createMission(@RequestBody MissionEntity missionBody){
         try {
             MissionEntity mission = missionService.createMission(missionBody);
+
             return ResponseEntity.ok().body(mission);
         } catch (MissingCredentialsException | BadRequestException e){
             return ResponseEntity.badRequest().body(e.getMessage());

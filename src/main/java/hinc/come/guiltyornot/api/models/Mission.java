@@ -18,6 +18,7 @@ public class Mission {
     Integer rewardExp;
     Integer rewardMoney;
     Integer levelOfDifficulty;
+    String role;
     public static Mission toModel(MissionEntity entity) {
         Mission model = new Mission();
         model.setId(entity.getId());
@@ -28,6 +29,7 @@ public class Mission {
         model.setRewardExp(entity.getRewardExp());
         model.setRewardMoney(entity.getRewardMoney());
         model.setLevelOfDifficulty(entity.getLevelOfDifficulty());
+        model.setRole(entity.getRole());
         return model;
     }
 

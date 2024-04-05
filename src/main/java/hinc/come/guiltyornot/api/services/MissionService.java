@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.services;
 
+import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
@@ -56,6 +57,8 @@ public class MissionService {
         if (missionRepository.findByTitle(missionBody.getTitle()) != null){
             throw new UserAlreadyExistException("Note with such title already exist");
         }
+
+
 
         return missionRepository.save(missionBody);
     }
