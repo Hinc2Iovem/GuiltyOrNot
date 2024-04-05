@@ -31,4 +31,11 @@ public class AnswerEntity {
 
     @Builder.Default
     Instant time = Instant.now();
+
+    @ManyToOne
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
+    QuestionEntity question;
+
+    @Column(name = "question_id", updatable = false, insertable = false)
+    Long questionId;
 }

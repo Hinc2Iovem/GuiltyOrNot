@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -17,6 +19,7 @@ public class Answer {
     Integer points;
     String text;
     Instant time;
+    Long questionId;
 
     public static Answer toModel(AnswerEntity entity) {
         Answer model = new Answer();
@@ -25,6 +28,11 @@ public class Answer {
         model.setType(entity.getType());
         model.setTime(entity.getTime());
         model.setPoints(entity.getPoints());
+        model.setQuestionId(entity.getQuestionId());
         return model;
+    }
+
+    public static List<Answer> toModelList(List<AnswerEntity> entities) {
+        return entities.stream().map(Answer::toModel).collect(Collectors.toList());
     }
 }
