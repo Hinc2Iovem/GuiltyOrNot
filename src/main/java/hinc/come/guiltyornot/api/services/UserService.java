@@ -34,7 +34,7 @@ public class UserService {
 
     public UserEntity updateUserLogin(
             Long userId,
-            @RequestBody String userName
+            String userName
     ) throws NotFoundException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()){
@@ -48,6 +48,7 @@ public class UserService {
         }
 
         return userRepository.save(existingUser);
+
 //        if(user.getPassword() != null){
 //            existingUser.setPassword(user.getPassword());
 //        }
@@ -96,31 +97,33 @@ public class UserService {
                     currentDetective.setMoney(currentDetective.getMoney() + existingMission.getRewardMoney());
                     currentDetective.setExp(currentDetective.getExp() + existingMission.getRewardExp());
 
-                    MissionEntity currentDetectiveMission = currentDetective.getUser()
-                            .getMissions().stream()
-                            .filter(m -> m.getId().equals(missionId))
-                            .findFirst()
-                            .orElse(null);
+//                    MissionEntity currentDetectiveMission = currentDetective.getUser()
+//                            .getMissions().stream()
+//                            .filter(m -> m.getId().equals(missionId))
+//                            .findFirst()
+//                            .orElse(null);
+                existingMission.setIsFinished(true);
 
-                assert currentDetectiveMission != null;
-                currentDetectiveMission.setIsFinished(true);
+//                assert currentDetectiveMission != null;
+//                currentDetectiveMission.setIsFinished(true);
 
-                missionRepository.save(currentDetectiveMission);
+                missionRepository.save(existingMission);
                 detectiveRepository.save(currentDetective);
             } else if(Objects.equals(currentRole, "guilty")){
                 GuiltyEntity currentGuilty = guiltyRepository.findByUserId(userId);
                 currentGuilty.setMoney(currentGuilty.getMoney() + existingMission.getRewardMoney());
                 currentGuilty.setExp(currentGuilty.getExp() + existingMission.getRewardExp());
 
-                MissionEntity currentGuiltyMission = currentGuilty.getUser()
-                        .getMissions().stream()
-                        .filter(m -> m.getId().equals(missionId))
-                        .findFirst()
-                        .orElse(null);
-
-                assert currentGuiltyMission != null;
-                currentGuiltyMission.setIsFinished(true);
-                missionRepository.save(currentGuiltyMission);
+                existingMission.setIsFinished(true);
+//                MissionEntity currentGuiltyMission = currentGuilty.getUser()
+//                        .getMissions().stream()
+//                        .filter(m -> m.getId().equals(missionId))
+//                        .findFirst()
+//                        .orElse(null);
+//
+//                assert currentGuiltyMission != null;
+//                currentGuiltyMission.setIsFinished(true);
+                missionRepository.save(existingMission);
                 guiltyRepository.save(currentGuilty);
             }
         } else {
@@ -129,7 +132,7 @@ public class UserService {
                 boolean moreThanZero = true;
                 if(currentDetective.getMoney() == 0
                         || currentDetective.getMoney() < 0
-                        || (currentDetective.getMoney() - existingMission.getDefeatExp()) < 0) {
+                        || (currentDetective.getMoney() - existingMission.getDefeatMoney()) < 0) {
                     currentDetective.setMoney(0);
                     moreThanZero = false;
                 }
@@ -140,8 +143,8 @@ public class UserService {
                     moreThanZero = false;
                 }
                 if(moreThanZero) {
-                    currentDetective.setMoney(currentDetective.getMoney() - existingMission.getRewardMoney());
-                    currentDetective.setExp(currentDetective.getExp() - existingMission.getRewardExp());
+                    currentDetective.setMoney(currentDetective.getMoney() - existingMission.getDefeatMoney());
+                    currentDetective.setExp(currentDetective.getExp() - existingMission.getDefeatExp());
                 }
 
                 detectiveRepository.save(currentDetective);
@@ -150,7 +153,7 @@ public class UserService {
                 boolean moreThanZero = true;
                 if(currentGuilty.getMoney() == 0
                         || currentGuilty.getMoney() < 0
-                        || (currentGuilty.getMoney() - existingMission.getDefeatExp()) < 0) {
+                        || (currentGuilty.getMoney() - existingMission.getDefeatMoney()) < 0) {
                     currentGuilty.setMoney(0);
                     moreThanZero = false;
                 }
@@ -161,8 +164,8 @@ public class UserService {
                     moreThanZero = false;
                 }
                 if(moreThanZero){
-                    currentGuilty.setMoney(currentGuilty.getMoney() - existingMission.getRewardMoney());
-                    currentGuilty.setExp(currentGuilty.getExp() - existingMission.getRewardExp());
+                    currentGuilty.setMoney(currentGuilty.getMoney() - existingMission.getDefeatMoney());
+                    currentGuilty.setExp(currentGuilty.getExp() - existingMission.getDefeatExp());
                 }
                 guiltyRepository.save(currentGuilty);
             }

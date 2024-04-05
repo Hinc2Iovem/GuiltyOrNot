@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
-@RequestMapping("/missions")
+@RequestMapping("/api/v1/missions")
 public class MissionController {
 
     @Autowired

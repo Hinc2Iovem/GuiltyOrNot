@@ -29,9 +29,7 @@ public class UserEntity {
     String password;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     List<MissionEntity> missions = new ArrayList<>();
-
-
 }

@@ -5,6 +5,7 @@ import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.User;
 import hinc.come.guiltyornot.api.services.UserService;
 import hinc.come.guiltyornot.api.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.store.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,16 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    public static final String UPDATE_DELETE_USER = "/{userId}";
-    public static final String UPDATE_USER_States = "/{userId}/missions/{missionId}";
+    public static final String DELETE_USER = "/{userId}";
+    public static final String UPDATE_USER_LOGIN = "/{userId}/login/{login}";
+    public static final String UPDATE_USER_PASSWORD = "/{userId}/password/{password}";
 
-    @PatchMapping(UPDATE_DELETE_USER)
+    public static final String UPDATE_USER_STATES = "/{userId}/missions/{missionId}/isFinished/{isFinished}";
+
+    @PatchMapping(UPDATE_USER_LOGIN)
     public ResponseEntity<User> updateUserLogin(
             @PathVariable(name = "userId") Long userId,
-            @RequestBody String userName
+            @PathVariable(name = "login") String userName
             ) throws NotFoundException, BadRequestException {
         try {
             UserEntity updatedUser = userService.updateUserLogin(userId, userName);
@@ -37,10 +41,10 @@ public class UserController {
         }
     }
 
-    @PatchMapping(UPDATE_DELETE_USER)
+    @PatchMapping(UPDATE_USER_PASSWORD)
     public ResponseEntity<User> updateUserPassword(
             @PathVariable(name = "userId") Long userId,
-            @RequestBody String userPassword
+            @PathVariable(name = "password") String userPassword
     ) throws NotFoundException, BadRequestException {
         try {
             UserEntity updatedUser = userService.updateUserPassword(userId, userPassword);
@@ -52,11 +56,11 @@ public class UserController {
         }
     }
 
-    @PatchMapping(UPDATE_USER_States)
+    @PatchMapping(UPDATE_USER_STATES)
     public ResponseEntity<User> updateUserStates(
             @PathVariable(name = "userId") Long userId,
             @PathVariable(name = "missionId") Long missionId,
-            @RequestBody Boolean isFinished
+            @PathVariable(name = "isFinished") Boolean isFinished
     ) throws NotFoundException, BadRequestException {
         try {
             UserEntity updatedUser = userService.updateUserStates(userId, missionId, isFinished);
@@ -68,7 +72,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(UPDATE_DELETE_USER)
+    @DeleteMapping(DELETE_USER)
     public ResponseEntity deleteUser(
             @PathVariable(name = "userId") Long userId
     ) {

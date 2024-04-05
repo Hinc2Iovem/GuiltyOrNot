@@ -5,8 +5,13 @@ import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
+import hinc.come.guiltyornot.api.store.entities.DetectiveEntity;
+import hinc.come.guiltyornot.api.store.entities.GuiltyEntity;
 import hinc.come.guiltyornot.api.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.store.repositories.DetectiveRepository;
+import hinc.come.guiltyornot.api.store.repositories.GuiltyRepository;
 import hinc.come.guiltyornot.api.store.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +21,12 @@ import java.util.Arrays;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Transactional
 public class AuthService {
 
     @Autowired
     UserRepository userRepository;
+
 
     public UserEntity registration(UserEntity user) throws UserAlreadyExistException, MissingCredentialsException {
         if (userRepository.findByUsername(user.getUsername()) != null){
@@ -32,9 +39,9 @@ public class AuthService {
             throw new MissingCredentialsException("All fields required: username, password, role");
         }
 
+        UserEntity userSaved = userRepository.saveAndFlush(user);
 
-
-        return userRepository.save(user);
+        return userSaved;
     }
 
     public UserEntity login(UserEntity user) throws NotFoundException, MissingCredentialsException, BadRequestException {
@@ -52,6 +59,7 @@ public class AuthService {
         if(!currentUser.getPassword().equals(user.getPassword())){
             throw new BadRequestException("Wrong credentials");
         }
+
         return currentUser;
     }
 }

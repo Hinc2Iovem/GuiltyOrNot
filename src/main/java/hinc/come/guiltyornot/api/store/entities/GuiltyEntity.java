@@ -29,4 +29,5 @@ public class GuiltyEntity {
 
     @Column(name = "user_id", updatable = false, insertable = false)
     Long userId;
+
 }
