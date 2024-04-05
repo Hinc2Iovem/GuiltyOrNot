@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "finished_mission")
-public class FinishedMissionEntity {
+@Table(name = "finished_mission_detective")
+public class FinishedMissionDetectiveEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

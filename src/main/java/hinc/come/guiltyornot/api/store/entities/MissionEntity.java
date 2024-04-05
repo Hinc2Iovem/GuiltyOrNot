@@ -45,4 +45,6 @@ public class MissionEntity {
     @Builder.Default
     Instant createdAt = Instant.now();
 
+    @NonNull
+    String role;
 }

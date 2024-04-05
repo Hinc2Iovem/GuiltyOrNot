@@ -39,9 +39,10 @@ public class MissionService {
             missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
             missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
             missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
-            missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0
+            missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0 ||
+            missionBody.getRole().trim().isEmpty()
         ) {
-            throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp and rewardMoney are required");
+            throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp, role(detective, guilty) and rewardMoney are required");
         }
 
         int levelOfDifficulty;

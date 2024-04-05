@@ -84,7 +84,7 @@ public class UserService {
         Optional<MissionEntity> missionOptional = missionRepository.findById(missionId);
 
         if (userOptional.isEmpty() || missionOptional.isEmpty()){
-            throw new NotFoundException("User with such id doesn't exist");
+            throw new NotFoundException("User or mission with such id doesn't exist");
         }
 
         UserEntity existingUser = userOptional.get();
@@ -97,15 +97,6 @@ public class UserService {
                     currentDetective.setMoney(currentDetective.getMoney() + existingMission.getRewardMoney());
                     currentDetective.setExp(currentDetective.getExp() + existingMission.getRewardExp());
 
-//                    MissionEntity currentDetectiveMission = currentDetective.getUser()
-//                            .getMissions().stream()
-//                            .filter(m -> m.getId().equals(missionId))
-//                            .findFirst()
-//                            .orElse(null);
-
-//                assert currentDetectiveMission != null;
-//                currentDetectiveMission.setIsFinished(true);
-
                 missionRepository.save(existingMission);
                 detectiveRepository.save(currentDetective);
             } else if(Objects.equals(currentRole, "guilty")){
@@ -113,14 +104,6 @@ public class UserService {
                 currentGuilty.setMoney(currentGuilty.getMoney() + existingMission.getRewardMoney());
                 currentGuilty.setExp(currentGuilty.getExp() + existingMission.getRewardExp());
 
-//                MissionEntity currentGuiltyMission = currentGuilty.getUser()
-//                        .getMissions().stream()
-//                        .filter(m -> m.getId().equals(missionId))
-//                        .findFirst()
-//                        .orElse(null);
-//
-//                assert currentGuiltyMission != null;
-//                currentGuiltyMission.setIsFinished(true);
                 missionRepository.save(existingMission);
                 guiltyRepository.save(currentGuilty);
             }

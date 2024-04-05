@@ -31,5 +31,5 @@ public class UserEntity {
     @Builder.Default
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    List<FinishedMissionEntity> finishedMissions = new ArrayList<>();
+    List<FinishedMissionDetectiveEntity> finishedMissions = new ArrayList<>();
 }
