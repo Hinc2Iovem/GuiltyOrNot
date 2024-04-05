@@ -47,5 +47,4 @@ public class MissionEntity {
 
     @Builder.Default
     Boolean isFinished = false;
-
 }
