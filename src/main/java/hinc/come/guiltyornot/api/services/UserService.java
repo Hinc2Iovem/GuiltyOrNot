@@ -43,7 +43,7 @@ public class UserService {
 
         UserEntity existingUser = userOptional.get();
 
-        if(!userName.trim().isEmpty()){
+        if(userName != null && !userName.trim().isEmpty()){
             existingUser.setUsername(userName);
         }
 
@@ -68,7 +68,7 @@ public class UserService {
 
         UserEntity existingUser = userOptional.get();
 
-        if(!userPassword.trim().isEmpty()){
+        if(userPassword != null && !userPassword.trim().isEmpty()){
             existingUser.setPassword(userPassword);
         }
 
