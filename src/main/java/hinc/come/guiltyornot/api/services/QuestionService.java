@@ -58,7 +58,7 @@ public class QuestionService {
             throw new UserAlreadyExistException("Such question already exists");
         }
 
-        if(questionBody.getTitle().isEmpty() || questionBody.getText().isEmpty() || questionBody.getMissionId() == null){
+        if(questionBody.getTitle().isEmpty() || questionBody.getMissionId() == null){
             throw new MissingCredentialsException("Title, text and missionId are required");
         }
 
@@ -72,7 +72,6 @@ public class QuestionService {
 
         currentQuestion.setMission(currentMission);
         currentQuestion.setMissionId(currentMission.getId());
-        currentQuestion.setText(questionBody.getText());
         currentQuestion.setTitle(questionBody.getTitle());
         return questionRepository.save(currentQuestion);
     }
@@ -85,9 +84,7 @@ public class QuestionService {
             throw new NotFoundException("Question with such Id doesn't exist");
         }
         QuestionEntity existingQuestion = questionRepository.findById(questionId).get();
-        if(questionBody.getText() != null){
-            existingQuestion.setText(questionBody.getText());
-        }
+
         if(questionBody.getTitle() != null){
             existingQuestion.setTitle(questionBody.getTitle());
         }

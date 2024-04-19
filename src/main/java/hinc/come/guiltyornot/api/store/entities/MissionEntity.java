@@ -30,21 +30,16 @@ public class MissionEntity {
     @Builder.Default
     Integer levelOfDifficulty = 1;
 
-    @Builder.Default
-    Integer rewardExp = 0;
+    Integer rewardExp;
 
-    @Builder.Default
-    Integer rewardMoney = 0;
+    Integer rewardMoney;
 
-    @Builder.Default
-    Integer defeatExp = 0;
+    Integer defeatExp;
 
-    @Builder.Default
-    Integer defeatMoney = 0;
+    Integer defeatMoney;
 
     @Builder.Default
     Instant createdAt = Instant.now();
 
-    @NonNull
     String role;
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -23,53 +24,66 @@ public class MissionController {
     MissionService missionService;
 
     public static final String SINGLE_MISSION = "/{missionId}";
+    public static final String MISSIONS_BY_ROLE = "/roles/{role}";
+
 
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseEntity getMissions(){
+    public ResponseEntity<Stream<MissionEntity>> getMissions() throws BadRequestException {
         try {
             Stream<MissionEntity> missions = missionService.getMissions();
             return ResponseEntity.ok().body(missions);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong" + e.getMessage());
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(MISSIONS_BY_ROLE)
+    @Transactional(readOnly = true)
+    public ResponseEntity<Stream<MissionEntity>> getMissionsByRole(
+            @PathVariable(name = "role") String role
+    ) throws BadRequestException {
+        try {
+            UserRoles.valueOf(role.toUpperCase());
+            Stream<MissionEntity> missions = missionService.getMissionsByRole(role);
+            return ResponseEntity.ok().body(missions);
+        } catch (Exception e){
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
     @GetMapping(SINGLE_MISSION)
-    public ResponseEntity getMissionById(
+    public ResponseEntity<MissionEntity> getMissionById(
             @PathVariable(name = "missionId") Long missionId
-    ) {
+    ) throws BadRequestException {
         try {
             MissionEntity mission = missionService.getMissionById(missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
     @PostMapping
-    public ResponseEntity createMission(@RequestBody MissionEntity missionBody){
+    public ResponseEntity<MissionEntity> createMission(@RequestBody MissionEntity missionBody) throws BadRequestException {
         try {
             MissionEntity mission = missionService.createMission(missionBody);
-
             return ResponseEntity.ok().body(mission);
-        } catch (MissingCredentialsException | BadRequestException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
     @PatchMapping(SINGLE_MISSION)
-    public ResponseEntity updateMission(
+    public ResponseEntity<MissionEntity> updateMission(
             @RequestBody MissionEntity missionBody,
             @PathVariable(name = "missionId") Long missionId
-    ) {
+    ) throws BadRequestException {
         try {
             MissionEntity mission = missionService.updateMission(missionBody, missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 

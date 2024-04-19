@@ -1,11 +1,12 @@
 package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.domains.UserRoles;
+import hinc.come.guiltyornot.api.exceptions.BadRequestException;
+import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
-import hinc.come.guiltyornot.api.store.entities.DetectiveEntity;
-import hinc.come.guiltyornot.api.store.entities.GuiltyEntity;
-import hinc.come.guiltyornot.api.store.entities.MissionEntity;
-import hinc.come.guiltyornot.api.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
+import hinc.come.guiltyornot.api.models.User;
+import hinc.come.guiltyornot.api.store.entities.*;
 import hinc.come.guiltyornot.api.store.repositories.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,10 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
-
+    @Autowired
+    FinishedMissionDetectiveRepository finishedMissionDetectiveRepository;
+    @Autowired
+    FinishedMissionGuiltyRepository finishedMissionGuiltyRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -29,13 +33,12 @@ public class UserService {
     DetectiveRepository detectiveRepository;
     @Autowired
     GuiltyRepository guiltyRepository;
-    @Autowired
-    NotGuiltyRepository notGuiltyRepository;
+
 
     public UserEntity updateUserLogin(
             Long userId,
-            String userName
-    ) throws NotFoundException {
+            UserEntity user
+    ) throws NotFoundException, BadRequestException, MissingCredentialsException, UserAlreadyExistException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()){
             throw new NotFoundException("User with such id doesn't exist");
@@ -43,23 +46,53 @@ public class UserService {
 
         UserEntity existingUser = userOptional.get();
 
-        if(userName != null && !userName.trim().isEmpty()){
-            existingUser.setUsername(userName);
+        if(user.getPassword() == null || user.getPassword().trim().isEmpty()){
+               throw new MissingCredentialsException("Password is expected too!");
+        }
+
+        if(!existingUser.getPassword().equals(user.getPassword())){
+              throw new BadRequestException("Password don't match");
+        }
+
+        if(user.getUsername() != null && !user.getUsername().trim().isEmpty()){
+            UserEntity duplicateUser = userRepository.findByUsername(user.getUsername());
+            if(duplicateUser != null && !Objects.equals(duplicateUser.getId(), userId)){
+                throw new UserAlreadyExistException("User with such username already exists");
+            }
+            existingUser.setUsername(user.getUsername());
         }
 
         return userRepository.save(existingUser);
-
-//        if(user.getPassword() != null){
-//            existingUser.setPassword(user.getPassword());
-//        }
-//        if(user.getRole() != null){
-//            existingUser.setRole(user.getRole());
-//        }
     }
 
     public UserEntity updateUserPassword(
             Long userId,
-            String userPassword
+            UserEntity user
+    ) throws NotFoundException, MissingCredentialsException, BadRequestException {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()){
+            throw new NotFoundException("User with such id doesn't exist");
+        }
+
+        UserEntity existingUser = userOptional.get();
+        if(user.getUsername() == null || user.getUsername().trim().isEmpty()){
+            throw new MissingCredentialsException("Username is expected too!");
+        }
+
+        if(!existingUser.getUsername().equals(user.getUsername())){
+            throw new BadRequestException("Usernames don't match");
+        }
+
+        if(user.getPassword() != null && !user.getPassword().trim().isEmpty()){
+            existingUser.setPassword(user.getPassword());
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    public UserEntity updateUserRole(
+            Long userId,
+            String role
     ) throws NotFoundException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()){
@@ -68,9 +101,7 @@ public class UserService {
 
         UserEntity existingUser = userOptional.get();
 
-        if(userPassword != null && !userPassword.trim().isEmpty()){
-            existingUser.setPassword(userPassword);
-        }
+        existingUser.setRole(role);
 
         return userRepository.save(existingUser);
     }
@@ -97,6 +128,14 @@ public class UserService {
                     currentDetective.setMoney(currentDetective.getMoney() + existingMission.getRewardMoney());
                     currentDetective.setExp(currentDetective.getExp() + existingMission.getRewardExp());
 
+                FinishedMissionDetectiveEntity existingFinishedMission = finishedMissionDetectiveRepository.findByMissionIdAndUserId(existingMission.getId(), existingUser.getId());
+                if(existingFinishedMission == null){
+                    FinishedMissionDetectiveEntity currentFinishedMission = new FinishedMissionDetectiveEntity();
+                    currentFinishedMission.setMission(existingMission);
+                    currentFinishedMission.setUser(existingUser);
+
+                    finishedMissionDetectiveRepository.save(currentFinishedMission);
+                }
                 missionRepository.save(existingMission);
                 detectiveRepository.save(currentDetective);
             } else if(Objects.equals(currentRole, "guilty")){
@@ -104,6 +143,14 @@ public class UserService {
                 currentGuilty.setMoney(currentGuilty.getMoney() + existingMission.getRewardMoney());
                 currentGuilty.setExp(currentGuilty.getExp() + existingMission.getRewardExp());
 
+                FinishedMissionGuiltyEntity existingFinishedMission = finishedMissionGuiltyRepository.findByMissionIdAndUserId(existingMission.getId(), existingUser.getId());
+                if(existingFinishedMission == null){
+                    FinishedMissionGuiltyEntity currentFinishedMission = new FinishedMissionGuiltyEntity();
+                    currentFinishedMission.setMission(existingMission);
+                    currentFinishedMission.setUser(existingUser);
+
+                    finishedMissionGuiltyRepository.save(currentFinishedMission);
+                }
                 missionRepository.save(existingMission);
                 guiltyRepository.save(currentGuilty);
             }

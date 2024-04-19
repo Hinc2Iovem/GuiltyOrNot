@@ -8,6 +8,6 @@ import java.util.stream.Stream;
 
 public interface MissionRepository extends JpaRepository<MissionEntity, Long> {
     Stream<MissionEntity> streamAllBy();
-
+    Stream<MissionEntity> streamAllByRole(String role);
     MissionEntity findByTitle(String title);
 }

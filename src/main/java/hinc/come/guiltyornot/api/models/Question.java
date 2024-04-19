@@ -17,13 +17,11 @@ public class Question {
     Long id;
     Long missionId;
     String title;
-    String text;
     Instant time;
 
     public static Question toModel(QuestionEntity entity) {
         Question model = new Question();
         model.setId(entity.getId());
-        model.setText(entity.getText());
         model.setTitle(entity.getTitle());
         model.setTime(entity.getTime());
         model.setMissionId(entity.getMissionId());

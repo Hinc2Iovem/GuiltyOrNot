@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.controllers;
 
+import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.models.User;
@@ -21,18 +22,18 @@ public class UserController {
     UserService userService;
 
     public static final String DELETE_USER = "/{userId}";
-    public static final String UPDATE_USER_LOGIN = "/{userId}/login/{login}";
-    public static final String UPDATE_USER_PASSWORD = "/{userId}/password/{password}";
-
+    public static final String UPDATE_USER_LOGIN = "/{userId}/login";
+    public static final String UPDATE_USER_PASSWORD = "/{userId}/password";
+    public static final String UPDATE_USER_ROLE = "/{userId}/roles/{role}";
     public static final String UPDATE_USER_STATES = "/{userId}/missions/{missionId}/isFinished/{isFinished}";
 
     @PatchMapping(UPDATE_USER_LOGIN)
     public ResponseEntity<User> updateUserLogin(
             @PathVariable(name = "userId") Long userId,
-            @PathVariable(name = "login") String userName
+            @RequestBody UserEntity user
             ) throws NotFoundException, BadRequestException {
         try {
-            UserEntity updatedUser = userService.updateUserLogin(userId, userName);
+            UserEntity updatedUser = userService.updateUserLogin(userId, user);
             return ResponseEntity.ok().body(User.toModel(updatedUser));
         } catch (NotFoundException e) {
             throw new NotFoundException("Something went wrong: " + e.getMessage());
@@ -44,10 +45,26 @@ public class UserController {
     @PatchMapping(UPDATE_USER_PASSWORD)
     public ResponseEntity<User> updateUserPassword(
             @PathVariable(name = "userId") Long userId,
-            @PathVariable(name = "password") String userPassword
+            @RequestBody UserEntity user
     ) throws NotFoundException, BadRequestException {
         try {
-            UserEntity updatedUser = userService.updateUserPassword(userId, userPassword);
+            UserEntity updatedUser = userService.updateUserPassword(userId, user);
+            return ResponseEntity.ok().body(User.toModel(updatedUser));
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Something went wrong: " + e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    @PatchMapping(UPDATE_USER_ROLE)
+    public ResponseEntity<User> updateUserRole(
+            @PathVariable(name = "userId") Long userId,
+            @PathVariable(name = "role") String role
+            ) throws NotFoundException, BadRequestException {
+        try {
+            UserRoles.valueOf(role.toUpperCase());
+            UserEntity updatedUser = userService.updateUserRole(userId, role);
             return ResponseEntity.ok().body(User.toModel(updatedUser));
         } catch (NotFoundException e) {
             throw new NotFoundException("Something went wrong: " + e.getMessage());

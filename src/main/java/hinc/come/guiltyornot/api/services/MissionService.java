@@ -27,6 +27,13 @@ public class MissionService {
         return missionRepository.streamAllBy();
     }
 
+    @Transactional(readOnly = true)
+    public Stream<MissionEntity> getMissionsByRole(
+            String role
+    ) {
+        return missionRepository.streamAllByRole(role);
+    }
+
     public MissionEntity getMissionById(Long missionId) throws NotFoundException {
         Optional<MissionEntity> optionalMission = missionRepository.findById(missionId);
         if (optionalMission.isEmpty()) {
@@ -55,10 +62,8 @@ public class MissionService {
         }
 
         if (missionRepository.findByTitle(missionBody.getTitle()) != null){
-            throw new UserAlreadyExistException("Note with such title already exist");
+            throw new UserAlreadyExistException("Mission with such title already exist");
         }
-
-
 
         return missionRepository.save(missionBody);
     }
@@ -90,6 +95,9 @@ public class MissionService {
         }
         if(missionBody.getDefeatMoney() != null){
             existingMission.setDefeatMoney(missionBody.getDefeatMoney());
+        }
+        if(missionBody.getRole() != null){
+            existingMission.setRole(missionBody.getRole());
         }
         if(missionBody.getLevelOfDifficulty() != null){
             if(missionBody.getLevelOfDifficulty() < 1 || missionBody.getLevelOfDifficulty() > 5){
