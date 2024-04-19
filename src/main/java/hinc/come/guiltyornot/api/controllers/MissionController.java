@@ -27,6 +27,7 @@ public class MissionController {
     public static final String MISSIONS_BY_ROLE = "/roles/{role}";
 
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<Stream<MissionEntity>> getMissions() throws BadRequestException {
@@ -38,6 +39,7 @@ public class MissionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(MISSIONS_BY_ROLE)
     @Transactional(readOnly = true)
     public ResponseEntity<Stream<MissionEntity>> getMissionsByRole(
@@ -52,6 +54,7 @@ public class MissionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(SINGLE_MISSION)
     public ResponseEntity<MissionEntity> getMissionById(
             @PathVariable(name = "missionId") Long missionId
@@ -64,6 +67,7 @@ public class MissionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping
     public ResponseEntity<MissionEntity> createMission(@RequestBody MissionEntity missionBody) throws BadRequestException {
         try {
@@ -74,6 +78,7 @@ public class MissionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(SINGLE_MISSION)
     public ResponseEntity<MissionEntity> updateMission(
             @RequestBody MissionEntity missionBody,
@@ -88,6 +93,7 @@ public class MissionController {
     }
 
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping(SINGLE_MISSION)
     public ResponseEntity deleteMission(@PathVariable(name = "missionId") Long missionId) {
         try {

@@ -27,6 +27,7 @@ public class UserController {
     public static final String UPDATE_USER_ROLE = "/{userId}/roles/{role}";
     public static final String UPDATE_USER_STATES = "/{userId}/missions/{missionId}/isFinished/{isFinished}";
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(UPDATE_USER_LOGIN)
     public ResponseEntity<User> updateUserLogin(
             @PathVariable(name = "userId") Long userId,
@@ -42,6 +43,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(UPDATE_USER_PASSWORD)
     public ResponseEntity<User> updateUserPassword(
             @PathVariable(name = "userId") Long userId,
@@ -57,6 +59,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(UPDATE_USER_ROLE)
     public ResponseEntity<User> updateUserRole(
             @PathVariable(name = "userId") Long userId,
@@ -73,6 +76,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(UPDATE_USER_STATES)
     public ResponseEntity<User> updateUserStates(
             @PathVariable(name = "userId") Long userId,
@@ -89,6 +93,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping(DELETE_USER)
     public ResponseEntity deleteUser(
             @PathVariable(name = "userId") Long userId

@@ -18,15 +18,13 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
 @RequestMapping("/api/v1/auth")
 @Transactional
+@CrossOrigin
 public class AuthController {
     @Autowired
     DetectiveRepository detectiveRepository;
@@ -36,7 +34,6 @@ public class AuthController {
     @Autowired
     AuthService authService;
     public static final String SIGN_UP = "/registration";
-
 
     @PostMapping(SIGN_UP)
     public ResponseEntity<User> registration(@RequestBody UserEntity user) throws UserAlreadyExistException, BadRequestException, MissingCredentialsException {

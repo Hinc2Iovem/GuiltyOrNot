@@ -25,6 +25,7 @@ public class QuestionController {
     private static final String SINGLE_QUESTION = "/{questionId}";
     private static final String GET_QUESTIONS_BY_MISSION_ID = "/missions/{missionId}";
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<List<Question>> getQuestions() throws BadRequestException {
@@ -36,6 +37,7 @@ public class QuestionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(GET_QUESTIONS_BY_MISSION_ID)
     @Transactional(readOnly = true)
     public ResponseEntity<List<Question>> getQuestionsByMissionId(
@@ -49,6 +51,7 @@ public class QuestionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(SINGLE_QUESTION)
     public ResponseEntity<Question> getQuestionById(@PathVariable(name = "questionId") Long questionId) throws BadRequestException {
         try {
@@ -59,6 +62,7 @@ public class QuestionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping
     public ResponseEntity<Question> createQuestion(@RequestBody QuestionEntity questionBody) throws BadRequestException {
         try {
@@ -69,6 +73,7 @@ public class QuestionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(SINGLE_QUESTION)
     public ResponseEntity<Question> updateQuestion(
             @RequestBody QuestionEntity questionBody,
@@ -82,6 +87,7 @@ public class QuestionController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping(SINGLE_QUESTION)
     public ResponseEntity<String> deleteQuestion(
             @PathVariable(name = "questionId") Long questionId
