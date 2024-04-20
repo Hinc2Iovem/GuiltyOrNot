@@ -25,9 +25,14 @@ public class CharacterEntity {
 
     String name;
 
-    String hair_color;
+    String hairColor;
+
+    String gender;
 
     Integer age;
+
+    @Builder.Default
+    Integer levelOfDifficulty = 1;
 
     String feature;
 
