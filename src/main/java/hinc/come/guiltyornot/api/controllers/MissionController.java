@@ -22,7 +22,7 @@ public class MissionController {
 
     @Autowired
     MissionService missionService;
-    public static final String SINGLE_MISSION = "/{missionId}/roles/{role}";
+    public static final String SINGLE_MISSION = "/{missionId}";
     public static final String MISSIONS_BY_ROLE = "/roles/{role}";
 
 
@@ -63,13 +63,12 @@ public class MissionController {
         }
     }
 
-    @PostMapping(MISSIONS_BY_ROLE)
+    @PostMapping
     public ResponseEntity<MissionEntity> createMission(
-            @RequestBody MissionEntity missionBody,
-            @PathVariable(name = "role") String role
+            @RequestBody MissionEntity missionBody
     ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.createMission(missionBody, role);
+            MissionEntity mission = missionService.createMission(missionBody);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -79,11 +78,10 @@ public class MissionController {
     @PatchMapping(SINGLE_MISSION)
     public ResponseEntity<MissionEntity> updateMission(
             @RequestBody MissionEntity missionBody,
-            @PathVariable(name = "missionId") Long missionId,
-            @PathVariable(name = "role") String role
+            @PathVariable(name = "missionId") Long missionId
     ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.updateMission(missionBody, missionId, role);
+            MissionEntity mission = missionService.updateMission(missionBody, missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());

@@ -6,7 +6,11 @@ import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.api.store.entities.MissionEntity;
+import hinc.come.guiltyornot.api.store.entities.MissionGuiltyEntity;
+import hinc.come.guiltyornot.api.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.store.repositories.MissionGuiltyRepository;
 import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
+import hinc.come.guiltyornot.api.store.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,10 @@ import java.util.stream.Stream;
 public class MissionService {
     @Autowired
     MissionRepository missionRepository;
+    @Autowired
+    MissionGuiltyRepository missionGuiltyRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public Stream<MissionEntity> getMissions() {
@@ -43,30 +51,30 @@ public class MissionService {
     }
 
     public MissionEntity createMission(
-            MissionEntity missionBody,
-            String role
-    ) throws MissingCredentialsException, BadRequestException, UserAlreadyExistException {
-        if(role == null || role.trim().isEmpty()){
+            MissionEntity missionBody
+    ) throws MissingCredentialsException, BadRequestException, UserAlreadyExistException, NotFoundException {
+        if(missionBody.getUser().getRole() == null || missionBody.getUser().getRole().trim().isEmpty()){
             throw new MissingCredentialsException("Role is required!");
         }
 
-        if(role.equals("detective") || role.equals("guilty")){
+        if(missionBody.getUser().getRole().equals("detective") || missionBody.getUser().getRole().equals("guilty")){
             if (
                     missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
                             missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
-                            missionBody.getRole().trim().isEmpty()
+                            missionBody.getRole().trim().isEmpty() || missionBody.getUserId() == null
             ) {
-                throw new MissingCredentialsException("Description, title, and role(detective, guilty) are required");
+                throw new MissingCredentialsException("Description, title, userId and role(detective, guilty) are required");
             }
-        }else if(role.equals("admin")){
+
+        }else if(missionBody.getUser().getRole().equals("admin")){
             if (
                     missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
                             missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
                             missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
                             missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0 ||
-                            missionBody.getRole().trim().isEmpty()
+                            missionBody.getRole().trim().isEmpty() || missionBody.getUserId() == null
             ) {
-                throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp, role(detective, guilty) and rewardMoney are required");
+                throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp, userId, role(detective, guilty) and rewardMoney are required");
             }
         }
 
@@ -78,8 +86,20 @@ public class MissionService {
             }
         }
 
+        Optional<UserEntity> user = userRepository.findById(missionBody.getUserId());
+        if(user.isEmpty()){
+            throw new NotFoundException("User with such id doesn't exist");
+        }
+
         if (missionRepository.findByTitle(missionBody.getTitle()) != null){
             throw new UserAlreadyExistException("Mission with such title already exist");
+        }
+
+        if(missionBody.getUser().getRole().equals("guilty")){
+            MissionGuiltyEntity missionGuilty = new MissionGuiltyEntity();
+            missionGuilty.setMissionId(missionBody.getId());
+            missionGuilty.setMission(missionBody);
+            missionGuiltyRepository.save(missionGuilty);
         }
 
         return missionRepository.save(missionBody);
@@ -87,10 +107,9 @@ public class MissionService {
 
     public MissionEntity updateMission(
             MissionEntity missionBody,
-            Long missionId,
-            String role
+            Long missionId
     ) throws NotFoundException, BadRequestException, UserAlreadyExistException, MissingCredentialsException {
-        if(role == null || role.trim().isEmpty()){
+        if(missionBody.getUser().getRole() == null || missionBody.getUser().getRole().trim().isEmpty()){
             throw new MissingCredentialsException("Role is required!");
         }
 
@@ -98,9 +117,11 @@ public class MissionService {
         if (missionOptional.isEmpty()){
             throw new NotFoundException("Mission with such id doesn't exist " + missionId);
         }
+
+
         MissionEntity existingMission = missionOptional.get();
 
-        if(role.equals("admin")){
+        if(missionBody.getUser().getRole().equals("admin")){
             if(missionBody.getRewardMoney() != null){
                 existingMission.setRewardMoney(missionBody.getRewardMoney());
             }
@@ -115,9 +136,17 @@ public class MissionService {
             }
         }
 
+        if(missionBody.getUserId() != null){
+            Optional<UserEntity> user = userRepository.findById(missionBody.getUserId());
+            if(user.isEmpty()){
+                throw new NotFoundException("User with such id doesn't exist");
+            }
+            existingMission.setUserId(missionBody.getUserId());
+        }
+
         if(missionBody.getTitle() != null){
             if (missionRepository.findByTitle(missionBody.getTitle()) != null){
-                throw new UserAlreadyExistException("Note with such title already exist");
+                throw new UserAlreadyExistException("Mission with such title already exist");
             }
             existingMission.setTitle(missionBody.getTitle());
         }

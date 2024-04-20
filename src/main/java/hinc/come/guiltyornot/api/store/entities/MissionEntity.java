@@ -42,4 +42,11 @@ public class MissionEntity {
     Instant createdAt = Instant.now();
 
     String role;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    UserEntity user;
+
+    @Column(name = "user_id", updatable = false, insertable = false)
+    Long userId;
 }

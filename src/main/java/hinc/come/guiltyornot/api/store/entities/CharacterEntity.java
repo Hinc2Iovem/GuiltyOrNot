@@ -45,9 +45,9 @@ public class CharacterEntity {
     List<CharacterQuestionEntity> characterQuestions = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "mission_id", referencedColumnName = "id")
-    MissionEntity mission;
+    @JoinColumn(name = "mission_detective_id", referencedColumnName = "id")
+    MissionDetectiveEntity missionDetective;
 
-    @Column(name = "mission_id", updatable = false, insertable = false)
-    Long missionId;
+    @Column(name = "mission_detective_id", updatable = false, insertable = false)
+    Long missionDetectiveId;
 }
