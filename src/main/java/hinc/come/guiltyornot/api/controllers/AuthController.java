@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//Why do I handle repos here??
+//Why do I have Transactional here?? and need to test will cors work without @CrossOrigin
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
 @RequestMapping("/api/v1/auth")
