@@ -32,7 +32,6 @@ public class AuthController {
     DetectiveRepository detectiveRepository;
     @Autowired
     GuiltyRepository guiltyRepository;
-
     @Autowired
     AuthService authService;
     public static final String SIGN_UP = "/registration";

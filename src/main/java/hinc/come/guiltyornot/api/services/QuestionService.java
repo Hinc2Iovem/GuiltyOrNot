@@ -3,21 +3,18 @@ package hinc.come.guiltyornot.api.services;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
-import hinc.come.guiltyornot.api.models.Question;
 import hinc.come.guiltyornot.api.store.entities.MissionEntity;
+import hinc.come.guiltyornot.api.store.entities.MissionGuiltyEntity;
 import hinc.come.guiltyornot.api.store.entities.QuestionEntity;
-import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
+import hinc.come.guiltyornot.api.store.repositories.MissionGuiltyRepository;
 import hinc.come.guiltyornot.api.store.repositories.QuestionRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -27,7 +24,7 @@ public class QuestionService {
     QuestionRepository questionRepository;
 
     @Autowired
-    MissionRepository missionRepository;
+    MissionGuiltyRepository missionGuiltyRepository;
 
     @Transactional(readOnly = true)
     public List<QuestionEntity> getQuestions() {
@@ -35,11 +32,11 @@ public class QuestionService {
     };
 
     public List<QuestionEntity> getQuestionsByMissionId(
-            Long missionId
+            Long missionGuiltyId
     ) throws NotFoundException {
-       List<QuestionEntity> questionsByMissionId = questionRepository.findAllByMissionId(missionId);
+       List<QuestionEntity> questionsByMissionId = questionRepository.findAllByMissionGuiltyId(missionGuiltyId);
        if(questionsByMissionId.isEmpty()) {
-        throw new NotFoundException("There are no questions for mission with id: " + missionId);
+        throw new NotFoundException("There are no questions for mission with id: " + missionGuiltyId);
        }
 
        return questionsByMissionId;
@@ -58,20 +55,20 @@ public class QuestionService {
             throw new UserAlreadyExistException("Such question already exists");
         }
 
-        if(questionBody.getTitle().isEmpty() || questionBody.getMissionId() == null){
+        if(questionBody.getTitle().isEmpty() || questionBody.getMissionGuiltyId() == null){
             throw new MissingCredentialsException("Title, text and missionId are required");
         }
 
-        if(missionRepository.findById(questionBody.getMissionId()).isEmpty()){
+        if(missionGuiltyRepository.findById(questionBody.getMissionGuiltyId()).isEmpty()){
             throw new NotFoundException("Mission with such id doesn't exist.");
         }
 
-        MissionEntity currentMission = missionRepository.findById(questionBody.getMissionId()).get();
+        MissionGuiltyEntity currentMission = missionGuiltyRepository.findById(questionBody.getMissionGuiltyId()).get();
         QuestionEntity currentQuestion = new QuestionEntity();
 
 
-        currentQuestion.setMission(currentMission);
-        currentQuestion.setMissionId(currentMission.getId());
+        currentQuestion.setMissionGuilty(currentMission);
+        currentQuestion.setMissionGuiltyId(currentMission.getId());
         currentQuestion.setTitle(questionBody.getTitle());
         return questionRepository.save(currentQuestion);
     }

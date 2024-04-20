@@ -27,7 +27,6 @@ public class AnswerController {
     public static final String CREATE_ANSWER = "/questions/{questionId}";
     public static final String GET_ANSWERS_BY_QUESTION_ID = "/questions/{questionId}";
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<List<Answer>> getAnswers() throws BadRequestException {
@@ -38,7 +37,6 @@ public class AnswerController {
             throw new BadRequestException("Something went wrong " + e.getMessage());
         }
     }
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(GET_ANSWERS_BY_QUESTION_ID)
     @Transactional(readOnly = true)
     public ResponseEntity<List<Answer>> getAnswersByQuestionId(
@@ -51,7 +49,6 @@ public class AnswerController {
             throw new BadRequestException("Something went wrong " + e.getMessage());
         }
     }
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(SINGLE_ANSWER)
     public ResponseEntity<Answer> getAnswerById(@PathVariable(name = "answerId") Long answerId) throws BadRequestException {
         try {
@@ -62,7 +59,6 @@ public class AnswerController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping(CREATE_ANSWER)
     public ResponseEntity<Answer> createAnswer(
             @RequestBody AnswerEntity answerBody,
@@ -78,7 +74,6 @@ public class AnswerController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(SINGLE_ANSWER)
     public ResponseEntity<Answer> updateAnswer(
             @RequestBody AnswerEntity answerBody,
@@ -95,7 +90,6 @@ public class AnswerController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping(SINGLE_ANSWER)
     public ResponseEntity<String> deleteAnswer(
             @PathVariable(name = "answerId") Long answerId

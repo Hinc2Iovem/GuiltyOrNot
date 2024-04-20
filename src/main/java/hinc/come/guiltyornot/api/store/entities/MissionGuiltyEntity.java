@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -13,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "mission_detective")
-public class MissionDetectiveEntity {
+@Table(name = "mission_guilty")
+public class MissionGuiltyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -25,8 +23,4 @@ public class MissionDetectiveEntity {
 
     @Column(name = "mission_id", updatable = false, insertable = false)
     Long missionId;
-
-    @OneToMany
-    @JoinColumn(name = "characters_id")
-    private List<CharacterEntity> characters;
 }

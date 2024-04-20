@@ -22,12 +22,10 @@ public class MissionController {
 
     @Autowired
     MissionService missionService;
-
-    public static final String SINGLE_MISSION = "/{missionId}";
+    public static final String SINGLE_MISSION = "/{missionId}/roles/{role}";
     public static final String MISSIONS_BY_ROLE = "/roles/{role}";
 
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<Stream<MissionEntity>> getMissions() throws BadRequestException {
@@ -39,7 +37,6 @@ public class MissionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(MISSIONS_BY_ROLE)
     @Transactional(readOnly = true)
     public ResponseEntity<Stream<MissionEntity>> getMissionsByRole(
@@ -54,7 +51,6 @@ public class MissionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(SINGLE_MISSION)
     public ResponseEntity<MissionEntity> getMissionById(
             @PathVariable(name = "missionId") Long missionId
@@ -67,25 +63,27 @@ public class MissionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
-    @PostMapping
-    public ResponseEntity<MissionEntity> createMission(@RequestBody MissionEntity missionBody) throws BadRequestException {
+    @PostMapping(MISSIONS_BY_ROLE)
+    public ResponseEntity<MissionEntity> createMission(
+            @RequestBody MissionEntity missionBody,
+            @PathVariable(name = "role") String role
+    ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.createMission(missionBody);
+            MissionEntity mission = missionService.createMission(missionBody, role);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(SINGLE_MISSION)
     public ResponseEntity<MissionEntity> updateMission(
             @RequestBody MissionEntity missionBody,
-            @PathVariable(name = "missionId") Long missionId
+            @PathVariable(name = "missionId") Long missionId,
+            @PathVariable(name = "role") String role
     ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.updateMission(missionBody, missionId);
+            MissionEntity mission = missionService.updateMission(missionBody, missionId, role);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -93,7 +91,6 @@ public class MissionController {
     }
 
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping(SINGLE_MISSION)
     public ResponseEntity deleteMission(@PathVariable(name = "missionId") Long missionId) {
         try {

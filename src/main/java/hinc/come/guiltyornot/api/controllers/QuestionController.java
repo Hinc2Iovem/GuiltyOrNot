@@ -23,9 +23,8 @@ public class QuestionController {
     QuestionService questionService;
 
     private static final String SINGLE_QUESTION = "/{questionId}";
-    private static final String GET_QUESTIONS_BY_MISSION_ID = "/missions/{missionId}";
+    private static final String GET_QUESTIONS_BY_MISSION_ID = "/missions/{missionGuiltyId}";
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<List<Question>> getQuestions() throws BadRequestException {
@@ -37,21 +36,19 @@ public class QuestionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(GET_QUESTIONS_BY_MISSION_ID)
     @Transactional(readOnly = true)
     public ResponseEntity<List<Question>> getQuestionsByMissionId(
-            @PathVariable Long missionId
+            @PathVariable Long missionGuiltyId
     ) throws BadRequestException {
         try {
-            List<QuestionEntity> questions = questionService.getQuestionsByMissionId(missionId);
+            List<QuestionEntity> questions = questionService.getQuestionsByMissionId(missionGuiltyId);
             return ResponseEntity.ok().body(Question.toModelList(questions));
         } catch (Exception e) {
             throw new BadRequestException("Something went wrong " + e.getMessage());
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping(SINGLE_QUESTION)
     public ResponseEntity<Question> getQuestionById(@PathVariable(name = "questionId") Long questionId) throws BadRequestException {
         try {
@@ -62,7 +59,6 @@ public class QuestionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping
     public ResponseEntity<Question> createQuestion(@RequestBody QuestionEntity questionBody) throws BadRequestException {
         try {
@@ -73,7 +69,6 @@ public class QuestionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PatchMapping(SINGLE_QUESTION)
     public ResponseEntity<Question> updateQuestion(
             @RequestBody QuestionEntity questionBody,
@@ -87,7 +82,6 @@ public class QuestionController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping(SINGLE_QUESTION)
     public ResponseEntity<String> deleteQuestion(
             @PathVariable(name = "questionId") Long questionId

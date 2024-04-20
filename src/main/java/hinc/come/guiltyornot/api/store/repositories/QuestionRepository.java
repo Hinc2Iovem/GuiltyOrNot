@@ -13,5 +13,5 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
 
     QuestionEntity findByTitle(String title);
 
-    List<QuestionEntity> findAllByMissionId(Long missionId);
+    List<QuestionEntity> findAllByMissionGuiltyId(Long missionGuiltyId);
 }

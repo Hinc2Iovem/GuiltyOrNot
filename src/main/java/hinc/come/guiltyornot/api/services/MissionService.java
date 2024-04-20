@@ -42,15 +42,32 @@ public class MissionService {
         return optionalMission.get();
     }
 
-    public MissionEntity createMission(MissionEntity missionBody) throws MissingCredentialsException, BadRequestException, UserAlreadyExistException {
-        if (
-            missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
-            missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
-            missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
-            missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0 ||
-            missionBody.getRole().trim().isEmpty()
-        ) {
-            throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp, role(detective, guilty) and rewardMoney are required");
+    public MissionEntity createMission(
+            MissionEntity missionBody,
+            String role
+    ) throws MissingCredentialsException, BadRequestException, UserAlreadyExistException {
+        if(role == null || role.trim().isEmpty()){
+            throw new MissingCredentialsException("Role is required!");
+        }
+
+        if(role.equals("detective") || role.equals("guilty")){
+            if (
+                    missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
+                            missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
+                            missionBody.getRole().trim().isEmpty()
+            ) {
+                throw new MissingCredentialsException("Description, title, and role(detective, guilty) are required");
+            }
+        }else if(role.equals("admin")){
+            if (
+                    missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
+                            missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
+                            missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
+                            missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0 ||
+                            missionBody.getRole().trim().isEmpty()
+            ) {
+                throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp, role(detective, guilty) and rewardMoney are required");
+            }
         }
 
         int levelOfDifficulty;
@@ -68,19 +85,36 @@ public class MissionService {
         return missionRepository.save(missionBody);
     }
 
-    public MissionEntity updateMission(MissionEntity missionBody, Long missionId) throws NotFoundException, BadRequestException, UserAlreadyExistException {
+    public MissionEntity updateMission(
+            MissionEntity missionBody,
+            Long missionId,
+            String role
+    ) throws NotFoundException, BadRequestException, UserAlreadyExistException, MissingCredentialsException {
+        if(role == null || role.trim().isEmpty()){
+            throw new MissingCredentialsException("Role is required!");
+        }
+
         Optional<MissionEntity> missionOptional = missionRepository.findById(missionId);
         if (missionOptional.isEmpty()){
             throw new NotFoundException("Mission with such id doesn't exist " + missionId);
         }
         MissionEntity existingMission = missionOptional.get();
 
-        if(missionBody.getRewardMoney() != null){
-            existingMission.setRewardMoney(missionBody.getRewardMoney());
+        if(role.equals("admin")){
+            if(missionBody.getRewardMoney() != null){
+                existingMission.setRewardMoney(missionBody.getRewardMoney());
+            }
+            if(missionBody.getRewardExp() != null){
+                existingMission.setRewardExp(missionBody.getRewardExp());
+            }
+            if(missionBody.getDefeatExp() != null){
+                existingMission.setDefeatExp(missionBody.getDefeatExp());
+            }
+            if(missionBody.getDefeatMoney() != null){
+                existingMission.setDefeatMoney(missionBody.getDefeatMoney());
+            }
         }
-        if(missionBody.getRewardExp() != null){
-            existingMission.setRewardExp(missionBody.getRewardExp());
-        }
+
         if(missionBody.getTitle() != null){
             if (missionRepository.findByTitle(missionBody.getTitle()) != null){
                 throw new UserAlreadyExistException("Note with such title already exist");
@@ -90,12 +124,7 @@ public class MissionService {
         if(missionBody.getDescription() != null){
             existingMission.setDescription(missionBody.getDescription());
         }
-        if(missionBody.getDefeatExp() != null){
-            existingMission.setDefeatExp(missionBody.getDefeatExp());
-        }
-        if(missionBody.getDefeatMoney() != null){
-            existingMission.setDefeatMoney(missionBody.getDefeatMoney());
-        }
+
         if(missionBody.getRole() != null){
             existingMission.setRole(missionBody.getRole());
         }

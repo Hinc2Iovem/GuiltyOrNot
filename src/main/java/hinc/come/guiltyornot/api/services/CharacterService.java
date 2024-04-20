@@ -49,14 +49,13 @@ public class CharacterService {
         if(mission.isEmpty()){
             throw new NotFoundException("Mission with such id doesn't exist");
         }
-
+        MissionEntity existingMission = mission.get();
         List<CharacterEntity> characters = characterRepository.findAllById(charactersId);
         for(CharacterEntity c : characters){
             if(c.getName() == null || c.getName().trim().isEmpty()) {
                 throw new NotFoundException("Character with id \"" + c.getId().toString() + "\" doesn't exist");
             }
         }
-        MissionEntity existingMission = mission.get();
 
     }
 }

@@ -26,9 +26,9 @@ public class QuestionEntity {
     Instant time = Instant.now();
 
     @ManyToOne
-    @JoinColumn(name = "mission_id", referencedColumnName = "id")
-    MissionEntity mission;
+    @JoinColumn(name = "mission_guilty_id", referencedColumnName = "id")
+    MissionGuiltyEntity missionGuilty;
 
-    @Column(name = "mission_id", updatable = false, insertable = false)
-    Long missionId;
+    @Column(name = "mission_guilty_id", updatable = false, insertable = false)
+    Long missionGuiltyId;
 }

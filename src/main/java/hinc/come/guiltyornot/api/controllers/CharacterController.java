@@ -25,7 +25,6 @@ public class CharacterController {
             @RequestBody CharacterEntity characterBody
     ) throws BadRequestException {
         try {
-
             CharacterEntity character = characterService.createCharacter(characterBody);
             return ResponseEntity.ok().body(character);
         }catch(Exception e){
