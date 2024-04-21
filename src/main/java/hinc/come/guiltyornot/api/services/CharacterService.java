@@ -3,14 +3,8 @@ package hinc.come.guiltyornot.api.services;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
-import hinc.come.guiltyornot.api.store.entities.CharacterEntity;
-import hinc.come.guiltyornot.api.store.entities.MissionDetectiveEntity;
-import hinc.come.guiltyornot.api.store.entities.MissionEntity;
-import hinc.come.guiltyornot.api.store.entities.UserEntity;
-import hinc.come.guiltyornot.api.store.repositories.CharacterRepository;
-import hinc.come.guiltyornot.api.store.repositories.MissionDetectiveRepository;
-import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
-import hinc.come.guiltyornot.api.store.repositories.UserRepository;
+import hinc.come.guiltyornot.api.store.entities.*;
+import hinc.come.guiltyornot.api.store.repositories.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +24,12 @@ public class CharacterService {
     @Autowired
     MissionDetectiveRepository missionDetectiveRepository;
     @Autowired
-    UserRepository userRepository;
+    DetectiveRepository detectiveRepository;
 
-    public CharacterEntity createCharacter(CharacterEntity characterBody) throws MissingCredentialsException, BadRequestException {
+    public CharacterEntity createCharacter(CharacterEntity characterBody) throws MissingCredentialsException, BadRequestException, NotFoundException {
         AssignMissionNotNow(characterBody);
+        DetectiveWithSuchIdDoesntExist(characterBody.getDetectiveId());
+
         if (characterBody.getDescription() == null || characterBody.getDescription().trim().isEmpty()
                 || characterBody.getName() == null || characterBody.getName().trim().isEmpty()
                 || characterBody.getHairColor() == null || characterBody.getHairColor().trim().isEmpty()
@@ -47,13 +43,14 @@ public class CharacterService {
         return characterRepository.save(characterBody);
     }
 
-    public Stream<CharacterEntity> getCharactersByRoleAndUserId(Long userId) throws NotFoundException {
-        Optional<UserEntity> user = userRepository.findById(userId);
-        if(user.isEmpty()){
-            throw new NotFoundException("User with such id doesn't exist");
-        }
-        UserEntity existingUser = user.get();
-        Stream<CharacterEntity> characters = characterRepository.findAllByUserIdAndRole(userId, existingUser.getRole());
+    public Stream<CharacterEntity> getCharactersByDetectiveId(Long detectiveId) throws NotFoundException {
+        DetectiveWithSuchIdDoesntExist(detectiveId);
+        return characterRepository.findAllDetectiveId(detectiveId);
+    }
+
+    public CharacterEntity getCharacterById(Long characterId) throws NotFoundException {
+        CharacterWithSuchIdDoesntExist(characterId);
+        return characterRepository.findById(characterId).get();
     }
 
     public String assignCharactersToMission(
@@ -145,6 +142,15 @@ public class CharacterService {
             throw new NotFoundException("Character with such id doesn't exist");
         }
         return character.get();
+    }
+
+    private void DetectiveWithSuchIdDoesntExist(Long detectiveId) throws NotFoundException {
+        Optional<DetectiveEntity> detective = detectiveRepository.findById(detectiveId);
+        if(detective.isEmpty()){
+            throw new NotFoundException("Detective with such id doesn't exist");
+        }
+
+//        return detective.get();
     }
 
     private static boolean isMoreThanOneGuilty(List<CharacterEntity> characters) throws NotFoundException {

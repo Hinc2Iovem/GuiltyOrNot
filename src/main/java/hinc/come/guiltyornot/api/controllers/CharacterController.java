@@ -21,8 +21,8 @@ public class CharacterController {
     CharacterService characterService;
 
     public static final String ASSIGN_CHARACTERS_TO_MISSION = "/missions/{missionId}";
-    public static final String UPDATE_DELETE_CHARACTER = "/{characterId}";
-    public static final String GET_BY_ROLE_AND_USER_ID = "/users/{userId}";
+    public static final String SINGLE_CHARACTER = "/{characterId}";
+    public static final String GET_BY_ROLE_AND_USER_ID = "/detectives/{detectiveId}";
     @PostMapping
     public ResponseEntity<CharacterEntity> createCharacter(
             @RequestBody CharacterEntity characterBody
@@ -37,12 +37,22 @@ public class CharacterController {
 
     @Transactional
     @GetMapping(GET_BY_ROLE_AND_USER_ID)
-    public ResponseEntity<Stream<CharacterEntity>> getCharactersByRoleAndUserId(
-           @PathVariable Long userId
+    public ResponseEntity<Stream<CharacterEntity>> getCharactersByDetectiveId(
+           @PathVariable Long detectiveId
     ) throws BadRequestException {
         try {
-            Stream<CharacterEntity> characters = characterService.getCharactersByRoleAndUserId(userId);
+            Stream<CharacterEntity> characters = characterService.getCharactersByDetectiveId(detectiveId);
             return ResponseEntity.ok().body(characters);
+        } catch (Exception e) {
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
+        }
+    }
+    @Transactional
+    @GetMapping(SINGLE_CHARACTER)
+    public ResponseEntity<CharacterEntity> getCharacterById(Long characterId) throws BadRequestException {
+        try {
+            CharacterEntity character = characterService.getCharacterById(characterId);
+            return ResponseEntity.ok().body(character);
         } catch (Exception e) {
             throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
@@ -61,7 +71,7 @@ public class CharacterController {
         }
     }
 
-    @PatchMapping(UPDATE_DELETE_CHARACTER)
+    @PatchMapping(SINGLE_CHARACTER)
     public ResponseEntity<CharacterEntity> updateCharacter(
             @RequestBody CharacterEntity characterBody,
             @PathVariable(name = "characterId") Long characterId
@@ -74,7 +84,7 @@ public class CharacterController {
         }
     }
 
-    @DeleteMapping(UPDATE_DELETE_CHARACTER)
+    @DeleteMapping(SINGLE_CHARACTER)
     public ResponseEntity<String> deleteCharacter(Long characterId) throws BadRequestException {
         try {
             String response = characterService.deleteCharacter(characterId);

@@ -50,4 +50,11 @@ public class CharacterEntity {
 
     @Column(name = "mission_detective_id", updatable = false, insertable = false)
     Long missionDetectiveId;
+
+    @ManyToOne
+    @JoinColumn(name = "detective_id", referencedColumnName = "id")
+    DetectiveEntity detective;
+
+    @Column(name = "detective_id", updatable = false, insertable = false)
+    Long detectiveId;
 }
