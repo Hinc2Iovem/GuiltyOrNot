@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -29,4 +32,9 @@ public class DetectiveEntity {
 
     @Column(name = "user_id", updatable = false, insertable = false)
     Long userId;
+
+    @Builder.Default
+    @OneToMany
+    @JoinColumn(name = "detective_id", referencedColumnName = "id")
+    List<FinishedMissionDetectiveEntity> finishedMissionsDetective = new ArrayList<>();
 }

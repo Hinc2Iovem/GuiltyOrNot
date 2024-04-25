@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -15,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "character")
+@Table(name = "character_entity")
 public class CharacterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +34,6 @@ public class CharacterEntity {
 
     @Builder.Default
     Boolean isGuilty = false;
-
-    @Builder.Default
-    @OneToMany
-    @JoinColumn(name = "character_id", referencedColumnName = "id")
-    List<CharacterQuestionEntity> characterQuestions = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "mission_detective_id", referencedColumnName = "id")

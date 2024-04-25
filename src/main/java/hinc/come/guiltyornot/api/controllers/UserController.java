@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @DeleteMapping(DELETE_USER)
-    public ResponseEntity deleteUser(
+    public ResponseEntity<String> deleteUser(
             @PathVariable(name = "userId") Long userId
     ) {
         try {
@@ -99,7 +99,7 @@ public class UserController {
         } catch (NotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Something went wrong");
+            return ResponseEntity.badRequest().body("Something went wrong: " + e.getMessage());
         }
     }
 }

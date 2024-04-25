@@ -1,10 +1,14 @@
 package hinc.come.guiltyornot.api.models;
 
+import hinc.come.guiltyornot.api.store.entities.AnswerEntity;
 import hinc.come.guiltyornot.api.store.entities.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,5 +25,7 @@ public class User {
         model.setRole(entity.getRole());
         return model;
     }
-
+    public static List<User> toModelList(List<UserEntity> entities) {
+        return entities.stream().map(User::toModel).collect(Collectors.toList());
+    }
 }

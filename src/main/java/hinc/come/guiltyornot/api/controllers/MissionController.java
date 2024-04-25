@@ -3,6 +3,7 @@ package hinc.come.guiltyornot.api.controllers;
 import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
+import hinc.come.guiltyornot.api.models.Mission;
 import hinc.come.guiltyornot.api.services.MissionService;
 import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import lombok.AccessLevel;
@@ -22,15 +23,17 @@ public class MissionController {
 
     @Autowired
     MissionService missionService;
-    public static final String SINGLE_MISSION = "/{missionId}";
+    public static final String CREATE_MISSION = "/users/{userId}";
+    public static final String SINGLE_MISSION = "/{missionId}/users/{userId}";
+    public static final String SINGLE_MISSION_BY_ID = "/{missionId}";
     public static final String MISSIONS_BY_ROLE = "/roles/{role}";
 
 
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseEntity<Stream<MissionEntity>> getMissions() throws BadRequestException {
+    public ResponseEntity<List<Mission>> getMissions() throws BadRequestException {
         try {
-            Stream<MissionEntity> missions = missionService.getMissions();
+            List<Mission> missions = missionService.getMissions();
             return ResponseEntity.ok().body(missions);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -39,36 +42,37 @@ public class MissionController {
 
     @GetMapping(MISSIONS_BY_ROLE)
     @Transactional(readOnly = true)
-    public ResponseEntity<Stream<MissionEntity>> getMissionsByRole(
+    public ResponseEntity<List<Mission>> getMissionsByRole(
             @PathVariable(name = "role") String role
     ) throws BadRequestException {
         try {
             UserRoles.valueOf(role.toUpperCase());
-            Stream<MissionEntity> missions = missionService.getMissionsByRole(role);
+            List<Mission> missions = missionService.getMissionsByRole(role);
             return ResponseEntity.ok().body(missions);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
-    @GetMapping(SINGLE_MISSION)
-    public ResponseEntity<MissionEntity> getMissionById(
+    @GetMapping(SINGLE_MISSION_BY_ID)
+    public ResponseEntity<Mission> getMissionById(
             @PathVariable(name = "missionId") Long missionId
     ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.getMissionById(missionId);
+            Mission mission = missionService.getMissionById(missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
         }
     }
 
-    @PostMapping
-    public ResponseEntity<MissionEntity> createMission(
-            @RequestBody MissionEntity missionBody
+    @PostMapping(CREATE_MISSION)
+    public ResponseEntity<Mission> createMission(
+            @RequestBody MissionEntity missionBody,
+            @PathVariable Long userId
     ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.createMission(missionBody);
+            Mission mission = missionService.createMission(missionBody, userId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -76,12 +80,13 @@ public class MissionController {
     }
 
     @PatchMapping(SINGLE_MISSION)
-    public ResponseEntity<MissionEntity> updateMission(
+    public ResponseEntity<Mission> updateMission(
             @RequestBody MissionEntity missionBody,
-            @PathVariable(name = "missionId") Long missionId
+            @PathVariable(name = "missionId") Long missionId,
+            @PathVariable Long userId
     ) throws BadRequestException {
         try {
-            MissionEntity mission = missionService.updateMission(missionBody, missionId);
+            Mission mission = missionService.updateMission(missionBody, missionId, userId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -89,8 +94,8 @@ public class MissionController {
     }
 
 
-    @DeleteMapping(SINGLE_MISSION)
-    public ResponseEntity deleteMission(@PathVariable(name = "missionId") Long missionId) {
+    @DeleteMapping(SINGLE_MISSION_BY_ID)
+    public ResponseEntity<String> deleteMission(@PathVariable(name = "missionId") Long missionId) {
         try {
             missionService.deleteMission(missionId);
             return ResponseEntity.ok("Mission with id: " + missionId + " was deleted");

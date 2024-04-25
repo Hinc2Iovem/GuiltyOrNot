@@ -25,9 +25,9 @@ public class FinishedMissionDetectiveEntity {
     Long missionId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    UserEntity user;
+    @JoinColumn(name = "detective_id", referencedColumnName = "id")
+    DetectiveEntity detective;
 
-    @Column(name = "user_id", updatable = false, insertable = false)
-    Long userId;
+    @Column(name = "detective_id", updatable = false, insertable = false)
+    Long detectiveId;
 }

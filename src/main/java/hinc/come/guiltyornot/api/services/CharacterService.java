@@ -3,6 +3,7 @@ package hinc.come.guiltyornot.api.services;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
+import hinc.come.guiltyornot.api.models.Character;
 import hinc.come.guiltyornot.api.store.entities.*;
 import hinc.come.guiltyornot.api.store.repositories.*;
 import lombok.AccessLevel;
@@ -26,9 +27,12 @@ public class CharacterService {
     @Autowired
     DetectiveRepository detectiveRepository;
 
-    public CharacterEntity createCharacter(CharacterEntity characterBody) throws MissingCredentialsException, BadRequestException, NotFoundException {
+    public Character createCharacter(
+            CharacterEntity characterBody,
+            Long detectiveId
+    ) throws MissingCredentialsException, BadRequestException, NotFoundException {
         AssignMissionNotNow(characterBody);
-        DetectiveWithSuchIdDoesntExist(characterBody.getDetectiveId());
+        DetectiveEntity detective = DetectiveWithSuchIdDoesntExist(detectiveId);
 
         if (characterBody.getDescription() == null || characterBody.getDescription().trim().isEmpty()
                 || characterBody.getName() == null || characterBody.getName().trim().isEmpty()
@@ -37,20 +41,24 @@ public class CharacterService {
                 || characterBody.getAge() == null || characterBody.getAge() == 0
                 || characterBody.getFeature() == null || characterBody.getFeature().trim().isEmpty()
         ) {
-            throw new MissingCredentialsException("Description, name, hairColor, gender, age and feature are required!");
+            throw new MissingCredentialsException("Description, name, hairColor, gender, age, isGuilty, detectiveId and feature are required!");
         }
         AllowableLevelOfDifficulty(characterBody);
-        return characterRepository.save(characterBody);
+        characterBody.setMissionDetective(null);
+        characterBody.setMissionDetectiveId(null);
+        characterBody.setDetective(detective);
+        characterBody.setDetectiveId(detectiveId);
+        return Character.toModel(characterRepository.save(characterBody));
     }
 
-    public Stream<CharacterEntity> getCharactersByDetectiveId(Long detectiveId) throws NotFoundException {
+    public List<Character> getCharactersByDetectiveId(Long detectiveId) throws NotFoundException {
         DetectiveWithSuchIdDoesntExist(detectiveId);
-        return characterRepository.findAllDetectiveId(detectiveId);
+        return Character.toModelList(characterRepository.findAllByDetectiveId(detectiveId));
     }
 
-    public CharacterEntity getCharacterById(Long characterId) throws NotFoundException {
+    public Character getCharacterById(Long characterId) throws NotFoundException {
         CharacterWithSuchIdDoesntExist(characterId);
-        return characterRepository.findById(characterId).get();
+        return Character.toModel(characterRepository.findById(characterId).get());
     }
 
     public String assignCharactersToMission(
@@ -65,11 +73,14 @@ public class CharacterService {
 
         List<CharacterEntity> characters = characterRepository.findAllById(charactersId);
         boolean moreThanOneGuilty = isMoreThanOneGuilty(characters);
-
+        boolean oneGuilty = isThereOneGuilty(characters);
         UserEntity user = existingMission.getUser();
         if (user.getRole().equals("admin")){
             if (moreThanOneGuilty) {
                 throw new BadRequestException("There should be only one 1 guilty person!");
+            }
+            if(!oneGuilty){
+                throw new BadRequestException("There should be one guilty person always!");
             }
         }
 
@@ -82,7 +93,7 @@ public class CharacterService {
         return "Detective mission was created with missionId of: \" " + missionId + "\" and with these charactersIds \" " + charactersId;
     }
 
-    public CharacterEntity updateCharacter(
+    public Character updateCharacter(
             Long characterId,
             CharacterEntity characterBody
     ) throws BadRequestException, NotFoundException {
@@ -92,6 +103,9 @@ public class CharacterService {
 
         if(characterBody.getDescription() != null){
             existingCharacter.setDescription(characterBody.getDescription());
+        }
+        if(characterBody.getDetectiveId() != null){
+            existingCharacter.setDetectiveId(characterBody.getDetectiveId());
         }
         if(characterBody.getName() != null){
             existingCharacter.setName(characterBody.getName());
@@ -115,7 +129,7 @@ public class CharacterService {
             existingCharacter.setIsGuilty(characterBody.getIsGuilty());
         }
 
-        return characterRepository.save(existingCharacter);
+        return Character.toModel(characterRepository.save(existingCharacter));
     }
 
     public String deleteCharacter(Long characterId) throws NotFoundException {
@@ -144,13 +158,13 @@ public class CharacterService {
         return character.get();
     }
 
-    private void DetectiveWithSuchIdDoesntExist(Long detectiveId) throws NotFoundException {
+    private DetectiveEntity DetectiveWithSuchIdDoesntExist(Long detectiveId) throws NotFoundException {
         Optional<DetectiveEntity> detective = detectiveRepository.findById(detectiveId);
         if(detective.isEmpty()){
             throw new NotFoundException("Detective with such id doesn't exist");
         }
 
-//        return detective.get();
+        return detective.get();
     }
 
     private static boolean isMoreThanOneGuilty(List<CharacterEntity> characters) throws NotFoundException {
@@ -170,5 +184,19 @@ public class CharacterService {
             }
         }
         return moreThanOneGuilty;
+    }
+
+    private static boolean isThereOneGuilty(List<CharacterEntity> characters) throws NotFoundException {
+        boolean isGuiltyThere = false;
+        for (CharacterEntity c : characters) {
+            if (c.getName() == null || c.getName().trim().isEmpty()) {
+                throw new NotFoundException("Character with id \"" + c.getId().toString() + "\" doesn't exist");
+            }
+
+            if (c.getIsGuilty()) {
+                isGuiltyThere = true;
+            }
+        }
+        return isGuiltyThere;
     }
 }

@@ -27,14 +27,4 @@ public class UserEntity {
     String role;
 
     String password;
-
-    @Builder.Default
-    @OneToMany
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    List<FinishedMissionDetectiveEntity> finishedMissionsDetective = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    List<FinishedMissionGuiltyEntity> finishedMissionsGuilty = new ArrayList<>();
 }

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Question {
     Long id;
-    Long missionId;
+    Long missionGuiltyId;
     String title;
     Instant time;
 
@@ -24,7 +24,7 @@ public class Question {
         model.setId(entity.getId());
         model.setTitle(entity.getTitle());
         model.setTime(entity.getTime());
-        model.setMissionId(entity.getMissionId());
+        model.setMissionGuiltyId(entity.getMissionGuiltyId());
         return model;
     }
 

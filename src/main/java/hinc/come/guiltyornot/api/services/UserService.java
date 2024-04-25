@@ -1,22 +1,19 @@
 package hinc.come.guiltyornot.api.services;
 
-import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
-import hinc.come.guiltyornot.api.models.User;
 import hinc.come.guiltyornot.api.store.entities.*;
 import hinc.come.guiltyornot.api.store.repositories.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -123,31 +120,31 @@ public class UserService {
         MissionEntity existingMission = missionOptional.get();
 
         if(isFinished){
-            if(Objects.equals(currentRole, "detective")){
+            if(Objects.equals(currentRole, "detective") && existingMission.getRole().equals("detective")){
                     DetectiveEntity currentDetective = detectiveRepository.findByUserId(userId);
                     currentDetective.setMoney(currentDetective.getMoney() + existingMission.getRewardMoney());
                     currentDetective.setExp(currentDetective.getExp() + existingMission.getRewardExp());
 
-                FinishedMissionDetectiveEntity existingFinishedMission = finishedMissionDetectiveRepository.findByMissionIdAndUserId(existingMission.getId(), existingUser.getId());
+                FinishedMissionDetectiveEntity existingFinishedMission = finishedMissionDetectiveRepository.findByMissionIdAndDetectiveId(existingMission.getId(), existingUser.getId());
                 if(existingFinishedMission == null){
                     FinishedMissionDetectiveEntity currentFinishedMission = new FinishedMissionDetectiveEntity();
                     currentFinishedMission.setMission(existingMission);
-                    currentFinishedMission.setUser(existingUser);
+                    currentFinishedMission.setDetective(currentDetective);
 
                     finishedMissionDetectiveRepository.save(currentFinishedMission);
                 }
                 missionRepository.save(existingMission);
                 detectiveRepository.save(currentDetective);
-            } else if(Objects.equals(currentRole, "guilty")){
+            } else if(Objects.equals(currentRole, "guilty") && existingMission.getRole().equals("guilty")){
                 GuiltyEntity currentGuilty = guiltyRepository.findByUserId(userId);
                 currentGuilty.setMoney(currentGuilty.getMoney() + existingMission.getRewardMoney());
                 currentGuilty.setExp(currentGuilty.getExp() + existingMission.getRewardExp());
 
-                FinishedMissionGuiltyEntity existingFinishedMission = finishedMissionGuiltyRepository.findByMissionIdAndUserId(existingMission.getId(), existingUser.getId());
+                FinishedMissionGuiltyEntity existingFinishedMission = finishedMissionGuiltyRepository.findByMissionIdAndGuiltyId(existingMission.getId(), existingUser.getId());
                 if(existingFinishedMission == null){
                     FinishedMissionGuiltyEntity currentFinishedMission = new FinishedMissionGuiltyEntity();
                     currentFinishedMission.setMission(existingMission);
-                    currentFinishedMission.setUser(existingUser);
+                    currentFinishedMission.setGuilty(currentGuilty);
 
                     finishedMissionGuiltyRepository.save(currentFinishedMission);
                 }
@@ -155,7 +152,7 @@ public class UserService {
                 guiltyRepository.save(currentGuilty);
             }
         } else {
-            if(Objects.equals(currentRole, "detective")){
+            if(Objects.equals(currentRole, "detective") && existingMission.getRole().equals("detective")){
                 DetectiveEntity currentDetective = detectiveRepository.findByUserId(userId);
                 boolean moreThanZero = true;
                 if(currentDetective.getMoney() == 0
@@ -176,7 +173,7 @@ public class UserService {
                 }
 
                 detectiveRepository.save(currentDetective);
-            } else if(Objects.equals(currentRole, "guilty")){
+            } else if(Objects.equals(currentRole, "guilty") && existingMission.getRole().equals("guilty")){
                 GuiltyEntity currentGuilty = guiltyRepository.findByUserId(userId);
                 boolean moreThanZero = true;
                 if(currentGuilty.getMoney() == 0
@@ -202,11 +199,27 @@ public class UserService {
         return existingUser;
     }
 
-    public Long deleteUser(Long userId) throws NotFoundException {
+    public void deleteUser(Long userId) throws NotFoundException {
         if (userRepository.findById(userId).isEmpty()) {
             throw new NotFoundException("User with such id doesn't exist");
         }
+        List<FinishedMissionDetectiveEntity> finishedMissionsDetective = finishedMissionDetectiveRepository.findAllByDetectiveId(userId);
+        List<FinishedMissionGuiltyEntity> finishedMissionsGuilty = finishedMissionGuiltyRepository.findAllByGuiltyId(userId);
+        if(!finishedMissionsGuilty.isEmpty()){
+            finishedMissionGuiltyRepository.deleteAll();
+        }
+        if(!finishedMissionsDetective.isEmpty()){
+            finishedMissionDetectiveRepository.deleteAll();
+        }
+        List<MissionEntity> missions = missionRepository.findAllByUserId(userId);
+        if(!missions.isEmpty()){
+            for(MissionEntity m : missions){
+                m.setUserId(null);
+                m.setUser(null);
+            }
+        }
+        detectiveRepository.deleteById(userId);
+        guiltyRepository.deleteById(userId);
         userRepository.deleteById(userId);
-        return userId;
     }
 }

@@ -16,13 +16,11 @@ public class CharacterAnswerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
     String text;
-
     @OneToOne
     @JoinColumn(name = "character_question_id", referencedColumnName = "id")
     CharacterQuestionEntity characterQuestion;
 
-    @Column(name = "character_id", updatable = false, insertable = false)
+    @Column(name = "character_question_id", updatable = false, insertable = false)
     Long characterQuestionId;
 }

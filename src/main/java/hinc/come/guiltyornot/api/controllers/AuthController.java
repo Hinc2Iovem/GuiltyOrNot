@@ -39,8 +39,8 @@ public class AuthController {
     @PostMapping(SIGN_UP)
     public ResponseEntity<User> registration(@RequestBody UserEntity user) throws UserAlreadyExistException, BadRequestException, MissingCredentialsException {
         try {
-            UserEntity createdUser = authService.registration(user);
             UserRoles.valueOf(user.getRole().toUpperCase());
+            UserEntity createdUser = authService.registration(user);
 
             DetectiveEntity detective = new DetectiveEntity();
             detective.setUser(createdUser);

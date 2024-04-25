@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.api.store.entities;
 
 
+import hinc.come.guiltyornot.api.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

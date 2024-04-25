@@ -20,9 +20,9 @@ public class CharacterQuestionEntity {
     String text;
 
     @ManyToOne
-    @JoinColumn(name = "character_id", referencedColumnName = "id")
-    CharacterEntity character;
+    @JoinColumn(name = "character_entity_id", referencedColumnName = "id")
+    CharacterEntity characterEntity;
 
-    @Column(name = "character_id", updatable = false, insertable = false)
-    Long characterId;
+    @Column(name = "character_entity_id", updatable = false, insertable = false)
+    Long characterEntityId;
 }

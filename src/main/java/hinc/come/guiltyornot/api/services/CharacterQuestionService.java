@@ -2,6 +2,7 @@ package hinc.come.guiltyornot.api.services;
 
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
+import hinc.come.guiltyornot.api.models.CharacterQuestion;
 import hinc.come.guiltyornot.api.store.entities.CharacterEntity;
 import hinc.come.guiltyornot.api.store.entities.CharacterQuestionEntity;
 import hinc.come.guiltyornot.api.store.repositories.CharacterQuestionRepository;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -22,11 +24,11 @@ public class CharacterQuestionService {
     @Autowired
     CharacterRepository characterRepository;
 
-    public Stream<CharacterQuestionEntity> getCharacterQuestions(Long characterId) throws NotFoundException {
+    public List<CharacterQuestion> getCharacterQuestions(Long characterId) throws NotFoundException {
         IsCharacterExist(characterId);
-        return characterQuestionRepository.findAllByCharacterId(characterId);
+        return CharacterQuestion.toModelList(characterQuestionRepository.findAllByCharacterEntityId(characterId));
     }
-    public CharacterQuestionEntity createCharacterQuestion(
+    public CharacterQuestion createCharacterQuestion(
         Long characterId,
         CharacterQuestionEntity characterQBody
     ) throws NotFoundException, MissingCredentialsException {
@@ -37,10 +39,10 @@ public class CharacterQuestionService {
         }
 
         CharacterQuestionEntity characterQuestion = new CharacterQuestionEntity();
-        characterQuestion.setCharacter(existingCharacter);
-        characterQuestion.setCharacterId(characterId);
+        characterQuestion.setCharacterEntity(existingCharacter);
+        characterQuestion.setCharacterEntityId(characterId);
         characterQuestion.setText(characterQBody.getText());
-        return characterQuestionRepository.save(characterQuestion);
+        return CharacterQuestion.toModel(characterQuestionRepository.save(characterQuestion));
     }
 
     public String deleteCharacterQuestion(
@@ -49,7 +51,7 @@ public class CharacterQuestionService {
     ) throws NotFoundException {
         IsCharacterExist(characterId);
         IsQuestionExist(questionId);
-        characterQuestionRepository.deleteByIdAndCharacterId(questionId, characterId);
+        characterQuestionRepository.deleteByIdAndCharacterEntityId(questionId, characterId);
         return "Question with id \" " + questionId + "\" was deleted";
     }
 
