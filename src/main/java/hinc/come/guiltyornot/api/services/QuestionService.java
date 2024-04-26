@@ -3,7 +3,6 @@ package hinc.come.guiltyornot.api.services;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
-import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import hinc.come.guiltyornot.api.store.entities.MissionGuiltyEntity;
 import hinc.come.guiltyornot.api.store.entities.QuestionEntity;
 import hinc.come.guiltyornot.api.store.repositories.MissionGuiltyRepository;

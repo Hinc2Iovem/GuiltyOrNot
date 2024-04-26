@@ -1,16 +1,12 @@
 package hinc.come.guiltyornot.api.services;
 
-import hinc.come.guiltyornot.api.domains.AnswerTypes;
-import hinc.come.guiltyornot.api.domains.UserRoles;
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
 import hinc.come.guiltyornot.api.store.entities.AnswerEntity;
-import hinc.come.guiltyornot.api.store.entities.MissionEntity;
 import hinc.come.guiltyornot.api.store.entities.QuestionEntity;
 import hinc.come.guiltyornot.api.store.repositories.AnswerRepository;
-import hinc.come.guiltyornot.api.store.repositories.MissionRepository;
 import hinc.come.guiltyornot.api.store.repositories.QuestionRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -19,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)

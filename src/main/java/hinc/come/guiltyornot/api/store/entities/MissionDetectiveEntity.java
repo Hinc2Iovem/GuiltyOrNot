@@ -19,6 +19,27 @@ public class MissionDetectiveEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Builder.Default
+    Boolean withVictim = false;
+
+    @Column(unique = true)
+    String title;
+
+    String description;
+
+    @Builder.Default
+    Integer levelOfDifficulty = 1;
+
+    Integer rewardExp;
+
+    Integer rewardMoney;
+
+    Integer defeatExp;
+
+    Integer defeatMoney;
+
+    String role;
+
     @OneToOne
     @JoinColumn(name = "mission_id", referencedColumnName = "id")
     MissionEntity mission;
@@ -28,5 +49,19 @@ public class MissionDetectiveEntity {
 
     @OneToMany
     @JoinColumn(name = "characters_id")
-    private List<CharacterEntity> characters;
+    List<CharacterEntity> characters;
+
+    @OneToOne
+    @JoinColumn(name = "character_victim_id", referencedColumnName = "id")
+    CharacterVictimEntity characterVictim;
+
+    @Column(name = "character_victim_id", updatable = false, insertable = false)
+    Long characterVictimId;
+
+    @OneToOne
+    @JoinColumn(name = "character_guilty_id", referencedColumnName = "id")
+    CharacterGuiltyEntity characterGuilty;
+
+    @Column(name = "character_guilty_id", updatable = false, insertable = false)
+    Long characterGuiltyId;
 }

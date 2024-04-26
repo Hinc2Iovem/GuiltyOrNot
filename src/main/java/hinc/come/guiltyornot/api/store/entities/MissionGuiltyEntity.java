@@ -17,6 +17,24 @@ public class MissionGuiltyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(unique = true)
+    String title;
+
+    String description;
+
+    @Builder.Default
+    Integer levelOfDifficulty = 1;
+
+    Integer rewardExp;
+
+    Integer rewardMoney;
+
+    Integer defeatExp;
+
+    Integer defeatMoney;
+
+    String role;
+
     @OneToOne
     @JoinColumn(name = "mission_id", referencedColumnName = "id")
     MissionEntity mission;
