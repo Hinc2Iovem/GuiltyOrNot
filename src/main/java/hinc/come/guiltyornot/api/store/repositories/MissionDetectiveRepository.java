@@ -8,5 +8,5 @@ import java.util.List;
 public interface MissionDetectiveRepository extends JpaRepository<MissionDetectiveEntity, Long> {
     List<MissionDetectiveEntity> findAllBy();
     MissionDetectiveEntity findByTitle(String title);
-
+    List<MissionDetectiveEntity> findAllByDetectiveId(Long detectiveId);
 }

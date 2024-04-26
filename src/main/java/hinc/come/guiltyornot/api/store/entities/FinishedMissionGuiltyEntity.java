@@ -18,11 +18,11 @@ public class FinishedMissionGuiltyEntity {
     Long id;
 
     @OneToOne
-    @JoinColumn(name = "mission_id", referencedColumnName = "id")
-    MissionEntity mission;
+    @JoinColumn(name = "mission_guilty_id", referencedColumnName = "id")
+    MissionGuiltyEntity mission;
 
-    @Column(name = "mission_id", updatable = false, insertable = false)
-    Long missionId;
+    @Column(name = "mission_guilty_id", updatable = false, insertable = false)
+    Long missionGuiltyId;
 
     @ManyToOne
     @JoinColumn(name = "guilty_id", referencedColumnName = "id")

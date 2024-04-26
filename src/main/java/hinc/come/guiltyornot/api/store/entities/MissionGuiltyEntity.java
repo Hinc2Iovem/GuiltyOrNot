@@ -36,9 +36,9 @@ public class MissionGuiltyEntity {
     String role;
 
     @OneToOne
-    @JoinColumn(name = "mission_id", referencedColumnName = "id")
-    MissionEntity mission;
+    @JoinColumn(name = "guilty_id", referencedColumnName = "id")
+    GuiltyEntity guilty;
 
-    @Column(name = "mission_id", updatable = false, insertable = false)
-    Long missionId;
+    @Column(name = "guilty_id", updatable = false, insertable = false)
+    Long guiltyId;
 }

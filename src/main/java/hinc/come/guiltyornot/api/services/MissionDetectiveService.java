@@ -4,8 +4,12 @@ import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.exceptions.MissingCredentialsException;
 import hinc.come.guiltyornot.api.exceptions.NotFoundException;
 import hinc.come.guiltyornot.api.exceptions.UserAlreadyExistException;
+import hinc.come.guiltyornot.api.store.entities.CharacterEntity;
+import hinc.come.guiltyornot.api.store.entities.CharacterVictimEntity;
 import hinc.come.guiltyornot.api.store.entities.MissionDetectiveEntity;
 import hinc.come.guiltyornot.api.store.entities.UserEntity;
+import hinc.come.guiltyornot.api.store.repositories.CharacterGuiltyRepository;
+import hinc.come.guiltyornot.api.store.repositories.CharacterVictimRepository;
 import hinc.come.guiltyornot.api.store.repositories.MissionDetectiveRepository;
 import hinc.come.guiltyornot.api.store.repositories.UserRepository;
 import lombok.AccessLevel;
@@ -24,6 +28,7 @@ public class MissionDetectiveService {
     MissionDetectiveRepository missionDetectiveRepository;
     @Autowired
     UserRepository userRepository;
+
 
     @Transactional(readOnly = true)
     public List<MissionDetectiveEntity> getMissions() {
@@ -51,15 +56,14 @@ public class MissionDetectiveService {
         if(existingUser.getRole().equals("detective") || existingUser.getRole().equals("admin")){
             if(missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
                 missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
-                missionBody.getRole().trim().isEmpty() || missionBody.getCharacters().isEmpty() ||
-                missionBody.getCharacterGuilty() == null
+                missionBody.getRole().trim().isEmpty()
             ) {
-                throw new MissingCredentialsException("Description, title, characters, guilty and role(detective) are required");
+                throw new MissingCredentialsException("Description, title, and role(detective) are required");
             }
             if(existingUser.getRole().equals("admin")){
                 if(missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
                         missionBody.getRewardExp() == 0 || missionBody.getRewardMoney() == 0){
-                    throw new MissingCredentialsException("Description, title, defeatExp, defeatMoney, rewardExp, role(detective, guilty) and rewardMoney are required");
+                    throw new MissingCredentialsException("defeatExp, defeatMoney, rewardExp and rewardMoney are required");
                 }
             }
         }
@@ -89,7 +93,7 @@ public class MissionDetectiveService {
             MissionDetectiveEntity missionBody,
             Long missionId,
             Long userId
-    ) throws NotFoundException, BadRequestException, UserAlreadyExistException, MissingCredentialsException {
+    ) throws NotFoundException, BadRequestException, UserAlreadyExistException {
         Optional<UserEntity> user = userRepository.findById(userId);
         if(user.isEmpty()){
             throw new NotFoundException("User with such id doesn't exist");
@@ -100,7 +104,6 @@ public class MissionDetectiveService {
         if (missionOptional.isEmpty()){
             throw new NotFoundException("Mission with such id doesn't exist " + missionId);
         }
-
 
         MissionDetectiveEntity existingMission = missionOptional.get();
 
@@ -155,4 +158,6 @@ public class MissionDetectiveService {
 
         missionDetectiveRepository.deleteById(missionId);
     }
+
+
 }

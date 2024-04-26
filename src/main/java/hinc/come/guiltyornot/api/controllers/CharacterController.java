@@ -21,7 +21,7 @@ public class CharacterController {
     @Autowired
     CharacterService characterService;
 
-    public static final String ASSIGN_CHARACTERS_TO_MISSION = "/missions/{missionId}";
+    public static final String ASSIGN_CHARACTERS_TO_MISSION = "/missions/{missionId}/guilty/{guiltyId}/victims/{victimId}";
     public static final String SINGLE_CHARACTER = "/{characterId}";
     public static final String DETECTIVE_ID = "/detectives/{detectiveId}";
     @PostMapping(DETECTIVE_ID)
@@ -63,10 +63,12 @@ public class CharacterController {
     @PostMapping(ASSIGN_CHARACTERS_TO_MISSION)
     public ResponseEntity<String> assignCharactersToMission(
             @RequestBody List<Long> charactersId,
-            @PathVariable(name = "missionId") Long missionId
+            @PathVariable(name = "missionId") Long missionId,
+            @PathVariable Long guiltyId,
+            @PathVariable Long victimId
     ) throws BadRequestException {
         try {
-            String response = characterService.assignCharactersToMission(missionId, charactersId);
+            String response = characterService.assignCharactersToMission(missionId, charactersId, guiltyId, victimId);
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             throw new BadRequestException("Something went wrong: " + e.getMessage());

@@ -41,11 +41,11 @@ public class MissionDetectiveEntity {
     String role;
 
     @OneToOne
-    @JoinColumn(name = "mission_id", referencedColumnName = "id")
-    MissionEntity mission;
+    @JoinColumn(name = "detective_id", referencedColumnName = "id")
+    DetectiveEntity detective;
 
-    @Column(name = "mission_id", updatable = false, insertable = false)
-    Long missionId;
+    @Column(name = "detective_id", updatable = false, insertable = false)
+    Long detectiveId;
 
     @OneToMany
     @JoinColumn(name = "characters_id")

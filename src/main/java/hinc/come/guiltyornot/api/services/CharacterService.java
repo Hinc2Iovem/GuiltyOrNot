@@ -21,11 +21,13 @@ public class CharacterService {
     @Autowired
     CharacterRepository characterRepository;
     @Autowired
-    MissionRepository missionRepository;
-    @Autowired
     MissionDetectiveRepository missionDetectiveRepository;
     @Autowired
     DetectiveRepository detectiveRepository;
+    @Autowired
+    CharacterGuiltyRepository characterGuiltyRepository;
+    @Autowired
+    CharacterVictimRepository characterVictimRepository;
 
     public Character createCharacter(
             CharacterEntity characterBody,
@@ -63,18 +65,21 @@ public class CharacterService {
 
     public String assignCharactersToMission(
             Long missionId,
-            List<Long> charactersId
+            List<Long> charactersId,
+            Long guiltyId,
+            Long victimId
     ) throws NotFoundException, BadRequestException {
-        Optional<MissionEntity> mission = missionRepository.findById(missionId);
+        Optional<MissionDetectiveEntity> mission = missionDetectiveRepository.findById(missionId);
         if (mission.isEmpty()) {
             throw new NotFoundException("Mission with such id doesn't exist");
         }
-        MissionEntity existingMission = mission.get();
+        MissionDetectiveEntity existingMission = mission.get();
 
         List<CharacterEntity> characters = characterRepository.findAllById(charactersId);
         boolean moreThanOneGuilty = isMoreThanOneGuilty(characters);
         boolean oneGuilty = isThereOneGuilty(characters);
-        UserEntity user = existingMission.getUser();
+        DetectiveEntity detective = existingMission.getDetective();
+        UserEntity user = detective.getUser();
         if (user.getRole().equals("admin")){
             if (moreThanOneGuilty) {
                 throw new BadRequestException("There should be only one 1 guilty person!");
@@ -84,12 +89,38 @@ public class CharacterService {
             }
         }
 
-        MissionDetectiveEntity missionDetective = new MissionDetectiveEntity();
-        missionDetective.setMission(existingMission);
-        missionDetective.setMissionId(missionId);
-        missionDetective.setCharacters(characters);
-        missionDetectiveRepository.save(missionDetective);
+        CharacterGuiltyEntity guilty = new CharacterGuiltyEntity();
+        Optional<CharacterEntity> currentGuilty = characterRepository.findById(guiltyId);
+        if(currentGuilty.isEmpty()){
+            throw new NotFoundException("Guilty with such Id doesn't exist");
+        }
+        CharacterEntity existingGuilty = currentGuilty.get();
+        guilty.setCharacter(existingGuilty);
+        guilty.setMissionDetective(existingMission);
+        characterGuiltyRepository.saveAndFlush(guilty);
 
+
+        CharacterVictimEntity victim = new CharacterVictimEntity();
+        if(existingMission.getWithVictim()){
+            Optional<CharacterEntity> currentVictim = characterRepository.findById(victimId);
+            if(currentVictim.isEmpty()){
+                throw new NotFoundException("Victim with such Id doesn't exist");
+            }
+            CharacterEntity existingVictim = currentVictim.get();
+            victim.setCharacter(existingVictim);
+            victim.setMissionDetective(existingMission);
+            characterVictimRepository.saveAndFlush(victim);
+        }
+
+
+        MissionDetectiveEntity missionDetective = new MissionDetectiveEntity();
+        missionDetective.setCharacterGuilty(guilty);
+        missionDetective.setCharacters(characters);
+        if(existingMission.getWithVictim()){
+            missionDetective.setCharacterVictim(victim);
+        }
+
+        missionDetectiveRepository.save(missionDetective);
         return "Detective mission was created with missionId of: \" " + missionId + "\" and with these charactersIds \" " + charactersId;
     }
 
@@ -172,7 +203,7 @@ public class CharacterService {
         boolean moreThanOneGuilty = false;
         for (CharacterEntity c : characters) {
             if (c.getName() == null || c.getName().trim().isEmpty()) {
-                throw new NotFoundException("Character with id \"" + c.getId().toString() + "\" doesn't exist");
+                throw new NotFoundException("Character with Id \"" + c.getId().toString() + "\" doesn't exist");
             }
 
             if (isGuiltyThere && c.getIsGuilty()) {
