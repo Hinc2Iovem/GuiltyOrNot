@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.api.controllers;
 
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
+import hinc.come.guiltyornot.api.models.MissionDetective;
 import hinc.come.guiltyornot.api.services.MissionDetectiveService;
 import hinc.come.guiltyornot.api.store.entities.MissionDetectiveEntity;
 import lombok.AccessLevel;
@@ -24,9 +25,9 @@ public class MissionDetectiveController {
     public static final String SINGLE_MISSION_BY_ID = "/{missionId}";
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseEntity<List<MissionDetectiveEntity>> getMissions() throws BadRequestException {
+    public ResponseEntity<List<MissionDetective>> getMissions() throws BadRequestException {
         try {
-            List<MissionDetectiveEntity> missions = missionDetectiveService.getMissions();
+            List<MissionDetective> missions = missionDetectiveService.getMissions();
             return ResponseEntity.ok().body(missions);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -34,11 +35,11 @@ public class MissionDetectiveController {
     }
 
     @GetMapping(SINGLE_MISSION_BY_ID)
-    public ResponseEntity<MissionDetectiveEntity> getMissionById(
+    public ResponseEntity<MissionDetective> getMissionById(
             @PathVariable(name = "missionId") Long missionId
     ) throws BadRequestException {
         try {
-            MissionDetectiveEntity mission = missionDetectiveService.getMissionById(missionId);
+            MissionDetective mission = missionDetectiveService.getMissionById(missionId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -47,12 +48,12 @@ public class MissionDetectiveController {
 
 
     @PostMapping(CREATE_MISSION)
-    public ResponseEntity<MissionDetectiveEntity> createMission(
+    public ResponseEntity<MissionDetective> createMission(
             @RequestBody MissionDetectiveEntity missionBody,
             @PathVariable Long userId
     ) throws BadRequestException {
         try {
-            MissionDetectiveEntity mission = missionDetectiveService.createMission(missionBody, userId);
+            MissionDetective mission = missionDetectiveService.createMission(missionBody, userId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());
@@ -60,13 +61,13 @@ public class MissionDetectiveController {
     }
 
     @PatchMapping(SINGLE_MISSION)
-    public ResponseEntity<MissionDetectiveEntity> updateMission(
+    public ResponseEntity<MissionDetective> updateMission(
             @RequestBody MissionDetectiveEntity missionBody,
             @PathVariable(name = "missionId") Long missionId,
             @PathVariable Long userId
     ) throws BadRequestException {
         try {
-            MissionDetectiveEntity mission = missionDetectiveService.updateMission(missionBody, missionId, userId);
+            MissionDetective mission = missionDetectiveService.updateMission(missionBody, missionId, userId);
             return ResponseEntity.ok().body(mission);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());

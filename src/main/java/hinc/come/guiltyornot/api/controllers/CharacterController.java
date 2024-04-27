@@ -60,20 +60,20 @@ public class CharacterController {
         }
     }
 
-    @PostMapping(ASSIGN_CHARACTERS_TO_MISSION)
-    public ResponseEntity<String> assignCharactersToMission(
-            @RequestBody List<Long> charactersId,
-            @PathVariable(name = "missionId") Long missionId,
-            @PathVariable Long guiltyId,
-            @PathVariable Long victimId
-    ) throws BadRequestException {
-        try {
-            String response = characterService.assignCharactersToMission(missionId, charactersId, guiltyId, victimId);
-            return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            throw new BadRequestException("Something went wrong: " + e.getMessage());
-        }
-    }
+//    @PatchMapping(ASSIGN_CHARACTERS_TO_MISSION)
+//    public ResponseEntity<String> assignCharactersToMission(
+//            @RequestBody List<Long> charactersId,
+//            @PathVariable(name = "missionId") Long missionId,
+//            @PathVariable Long guiltyId,
+//            @PathVariable Long victimId
+//    ) throws BadRequestException {
+//        try {
+//            String response = characterService.assignCharactersToMission(missionId, charactersId, guiltyId, victimId);
+//            return ResponseEntity.ok().body(response);
+//        } catch (Exception e) {
+//            throw new BadRequestException("Something went wrong: " + e.getMessage());
+//        }
+//    }
 
     @PatchMapping(SINGLE_CHARACTER)
     public ResponseEntity<Character> updateCharacter(

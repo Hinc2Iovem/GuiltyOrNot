@@ -25,7 +25,7 @@ public class UserController {
     public static final String UPDATE_USER_LOGIN = "/{userId}/login";
     public static final String UPDATE_USER_PASSWORD = "/{userId}/password";
     public static final String UPDATE_USER_ROLE = "/{userId}/roles/{role}";
-    public static final String UPDATE_USER_STATES = "/{userId}/missions/{missionId}/isFinished/{isFinished}";
+    public static final String UPDATE_USER_STATES = "/{userId}/missions/{missionId}/roles/{role}/isFinished/{isFinished}";
 
     @PatchMapping(UPDATE_USER_LOGIN)
     public ResponseEntity<User> updateUserLogin(
@@ -77,10 +77,11 @@ public class UserController {
     public ResponseEntity<User> updateUserStates(
             @PathVariable(name = "userId") Long userId,
             @PathVariable(name = "missionId") Long missionId,
-            @PathVariable(name = "isFinished") Boolean isFinished
+            @PathVariable(name = "isFinished") Boolean isFinished,
+            @PathVariable(name = "role") String currentRole
     ) throws NotFoundException, BadRequestException {
         try {
-            UserEntity updatedUser = userService.updateUserStates(userId, missionId, isFinished);
+            UserEntity updatedUser = userService.updateUserStates(userId, missionId, isFinished, currentRole);
             return ResponseEntity.ok().body(User.toModel(updatedUser));
         } catch (NotFoundException e) {
             throw new NotFoundException("Something went wrong: " + e.getMessage());

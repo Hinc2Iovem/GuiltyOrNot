@@ -19,8 +19,7 @@ public class MissionDetectiveEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Builder.Default
-    Boolean withVictim = false;
+    Boolean withVictim;
 
     @Column(unique = true)
     String title;
@@ -48,8 +47,11 @@ public class MissionDetectiveEntity {
     Long detectiveId;
 
     @OneToMany
-    @JoinColumn(name = "characters_id")
+    @JoinColumn(name = "character_entity_id", referencedColumnName = "id")
     List<CharacterEntity> characters;
+
+    @Transient
+    List<Long> characterIds;
 
     @OneToOne
     @JoinColumn(name = "character_victim_id", referencedColumnName = "id")

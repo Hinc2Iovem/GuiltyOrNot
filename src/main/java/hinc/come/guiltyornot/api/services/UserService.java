@@ -78,7 +78,7 @@ public class UserService {
             throw new MissingCredentialsException("Username is expected too!");
         }
 
-        if(!existingUser.getUsername().equals(user.getUsername())){
+        if(!existingUser.getUsername().equalsIgnoreCase(user.getUsername())){
             throw new BadRequestException("Usernames don't match");
         }
 
@@ -108,39 +108,29 @@ public class UserService {
     public UserEntity updateUserStates(
             Long userId,
             Long missionId,
-            Boolean isFinished
+            Boolean isFinished,
+            String currentRole
     ) throws NotFoundException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
-        Optional<MissionDetectiveEntity> missionDetectiveOptional = missionDetectiveRepository.findById(missionId);
-        Optional<MissionGuiltyEntity> missionGuiltyOptional = missionGuiltyRepository.findById(missionId);
-
 
         if (userOptional.isEmpty()){
             throw new NotFoundException("User with such id doesn't exist");
         }
 
         UserEntity existingUser = userOptional.get();
-        String currentRole = existingUser.getRole().toLowerCase();
-        if(currentRole.equals("detective")){
-            if(missionDetectiveOptional.isEmpty()){
-                throw new NotFoundException("Mission with such id doesn't exist");
-            }
-        }else if(currentRole.equals("guilty")){
-            if(missionGuiltyOptional.isEmpty()){
-                throw new NotFoundException("Mission with such id doesn't exist");
-            }
-        }
-
-        MissionDetectiveEntity missionDetective = missionDetectiveOptional.get();
-        MissionGuiltyEntity missionGuilty = missionGuiltyOptional.get();
 
         if(isFinished){
-            if(currentRole.equals("detective")){
+            if(currentRole.equalsIgnoreCase("detective")){
                     DetectiveEntity currentDetective = detectiveRepository.findByUserId(userId);
+                    Optional<MissionDetectiveEntity> missionOptional = missionDetectiveRepository.findById(missionId);
+                    if(missionOptional.isEmpty()){
+                        throw new NotFoundException("Mission with such id doesn't exist");
+                    }
+                    MissionDetectiveEntity missionDetective = missionOptional.get();
                     currentDetective.setMoney(currentDetective.getMoney() + missionDetective.getRewardMoney());
                     currentDetective.setExp(currentDetective.getExp() + missionDetective.getRewardExp());
 
-                FinishedMissionDetectiveEntity existingFinishedMission = finishedMissionDetectiveRepository.findByMissionIdAndDetectiveId(missionDetective.getId(), existingUser.getId());
+                FinishedMissionDetectiveEntity existingFinishedMission = finishedMissionDetectiveRepository.findByMissionIdAndDetectiveId(missionDetective.getId(), currentDetective.getId());
                 if(existingFinishedMission == null){
                     FinishedMissionDetectiveEntity currentFinishedMission = new FinishedMissionDetectiveEntity();
                     currentFinishedMission.setMission(missionDetective);
@@ -149,12 +139,17 @@ public class UserService {
                     finishedMissionDetectiveRepository.save(currentFinishedMission);
                 }
                 detectiveRepository.save(currentDetective);
-            } else if(currentRole.equals("guilty")){
+            } else if(currentRole.equalsIgnoreCase("guilty")){
                 GuiltyEntity currentGuilty = guiltyRepository.findByUserId(userId);
+                Optional<MissionGuiltyEntity> missionOptional = missionGuiltyRepository.findById(missionId);
+                if(missionOptional.isEmpty()){
+                    throw new NotFoundException("Mission with such id doesn't exist");
+                }
+                MissionGuiltyEntity missionGuilty = missionOptional.get();
                 currentGuilty.setMoney(currentGuilty.getMoney() + missionGuilty.getRewardMoney());
                 currentGuilty.setExp(currentGuilty.getExp() + missionGuilty.getRewardExp());
 
-                FinishedMissionGuiltyEntity existingFinishedMission = finishedMissionGuiltyRepository.findByMissionIdAndGuiltyId(missionGuilty.getId(), existingUser.getId());
+                FinishedMissionGuiltyEntity existingFinishedMission = finishedMissionGuiltyRepository.findByMissionIdAndGuiltyId(missionGuilty.getId(), currentGuilty.getId());
                 if(existingFinishedMission == null){
                     FinishedMissionGuiltyEntity currentFinishedMission = new FinishedMissionGuiltyEntity();
                     currentFinishedMission.setMission(missionGuilty);
@@ -166,8 +161,13 @@ public class UserService {
                 guiltyRepository.save(currentGuilty);
             }
         } else {
-            if(currentRole.equals("detective")){
+            if(currentRole.equalsIgnoreCase("detective")){
                 DetectiveEntity currentDetective = detectiveRepository.findByUserId(userId);
+                Optional<MissionDetectiveEntity> missionOptional = missionDetectiveRepository.findById(missionId);
+                if(missionOptional.isEmpty()){
+                    throw new NotFoundException("Mission with such id doesn't exist");
+                }
+                MissionDetectiveEntity missionDetective = missionOptional.get();
                 boolean moreThanZero = true;
                 if(currentDetective.getMoney() == 0
                         || currentDetective.getMoney() < 0
@@ -187,8 +187,13 @@ public class UserService {
                 }
 
                 detectiveRepository.save(currentDetective);
-            } else if(currentRole.equals("guilty")){
+            } else if(currentRole.equalsIgnoreCase("guilty")){
                 GuiltyEntity currentGuilty = guiltyRepository.findByUserId(userId);
+                Optional<MissionGuiltyEntity> missionOptional = missionGuiltyRepository.findById(missionId);
+                if(missionOptional.isEmpty()){
+                    throw new NotFoundException("Mission with such id doesn't exist");
+                }
+                MissionGuiltyEntity missionGuilty = missionOptional.get();
                 boolean moreThanZero = true;
                 if(currentGuilty.getMoney() == 0
                         || currentGuilty.getMoney() < 0

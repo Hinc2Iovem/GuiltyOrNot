@@ -21,19 +21,13 @@ public class CharacterService {
     @Autowired
     CharacterRepository characterRepository;
     @Autowired
-    MissionDetectiveRepository missionDetectiveRepository;
-    @Autowired
     DetectiveRepository detectiveRepository;
-    @Autowired
-    CharacterGuiltyRepository characterGuiltyRepository;
-    @Autowired
-    CharacterVictimRepository characterVictimRepository;
+
 
     public Character createCharacter(
             CharacterEntity characterBody,
             Long detectiveId
     ) throws MissingCredentialsException, BadRequestException, NotFoundException {
-        AssignMissionNotNow(characterBody);
         DetectiveEntity detective = DetectiveWithSuchIdDoesntExist(detectiveId);
 
         if (characterBody.getDescription() == null || characterBody.getDescription().trim().isEmpty()
@@ -46,8 +40,6 @@ public class CharacterService {
             throw new MissingCredentialsException("Description, name, hairColor, gender, age, isGuilty, detectiveId and feature are required!");
         }
         AllowableLevelOfDifficulty(characterBody);
-        characterBody.setMissionDetective(null);
-        characterBody.setMissionDetectiveId(null);
         characterBody.setDetective(detective);
         characterBody.setDetectiveId(detectiveId);
         return Character.toModel(characterRepository.save(characterBody));
@@ -63,73 +55,72 @@ public class CharacterService {
         return Character.toModel(characterRepository.findById(characterId).get());
     }
 
-    public String assignCharactersToMission(
-            Long missionId,
-            List<Long> charactersId,
-            Long guiltyId,
-            Long victimId
-    ) throws NotFoundException, BadRequestException {
-        Optional<MissionDetectiveEntity> mission = missionDetectiveRepository.findById(missionId);
-        if (mission.isEmpty()) {
-            throw new NotFoundException("Mission with such id doesn't exist");
-        }
-        MissionDetectiveEntity existingMission = mission.get();
+//    TODO Maybe I'll need to delete it
 
-        List<CharacterEntity> characters = characterRepository.findAllById(charactersId);
-        boolean moreThanOneGuilty = isMoreThanOneGuilty(characters);
-        boolean oneGuilty = isThereOneGuilty(characters);
-        DetectiveEntity detective = existingMission.getDetective();
-        UserEntity user = detective.getUser();
-        if (user.getRole().equals("admin")){
-            if (moreThanOneGuilty) {
-                throw new BadRequestException("There should be only one 1 guilty person!");
-            }
-            if(!oneGuilty){
-                throw new BadRequestException("There should be one guilty person always!");
-            }
-        }
-
-        CharacterGuiltyEntity guilty = new CharacterGuiltyEntity();
-        Optional<CharacterEntity> currentGuilty = characterRepository.findById(guiltyId);
-        if(currentGuilty.isEmpty()){
-            throw new NotFoundException("Guilty with such Id doesn't exist");
-        }
-        CharacterEntity existingGuilty = currentGuilty.get();
-        guilty.setCharacter(existingGuilty);
-        guilty.setMissionDetective(existingMission);
-        characterGuiltyRepository.saveAndFlush(guilty);
-
-
-        CharacterVictimEntity victim = new CharacterVictimEntity();
-        if(existingMission.getWithVictim()){
-            Optional<CharacterEntity> currentVictim = characterRepository.findById(victimId);
-            if(currentVictim.isEmpty()){
-                throw new NotFoundException("Victim with such Id doesn't exist");
-            }
-            CharacterEntity existingVictim = currentVictim.get();
-            victim.setCharacter(existingVictim);
-            victim.setMissionDetective(existingMission);
-            characterVictimRepository.saveAndFlush(victim);
-        }
-
-
-        MissionDetectiveEntity missionDetective = new MissionDetectiveEntity();
-        missionDetective.setCharacterGuilty(guilty);
-        missionDetective.setCharacters(characters);
-        if(existingMission.getWithVictim()){
-            missionDetective.setCharacterVictim(victim);
-        }
-
-        missionDetectiveRepository.save(missionDetective);
-        return "Detective mission was created with missionId of: \" " + missionId + "\" and with these charactersIds \" " + charactersId;
-    }
+//    public String assignCharactersToMission(
+//            Long missionId,
+//            List<Long> charactersId,
+//            Long guiltyId,
+//            Long victimId
+//    ) throws NotFoundException, BadRequestException {
+//        Optional<MissionDetectiveEntity> mission = missionDetectiveRepository.findById(missionId);
+//        if (mission.isEmpty()) {
+//            throw new NotFoundException("Mission with such id doesn't exist");
+//        }
+//        MissionDetectiveEntity existingMission = mission.get();
+//
+//        List<CharacterEntity> characters = characterRepository.findAllById(charactersId);
+////        boolean moreThanOneGuilty = isMoreThanOneGuilty(characters);
+////        boolean oneGuilty = isThereOneGuilty(characters);
+////        DetectiveEntity detective = existingMission.getDetective();
+////        UserEntity user = detective.getUser();
+////        if (user.getRole().equalsIgnoreCase("admin")){
+////            if (moreThanOneGuilty) {
+////                throw new BadRequestException("There should be only one 1 guilty person!");
+////            }
+////            if(!oneGuilty){
+////                throw new BadRequestException("There should be one guilty person always!");
+////            }
+////        }
+//
+//        CharacterGuiltyEntity guilty = new CharacterGuiltyEntity();
+//        Optional<CharacterEntity> currentGuilty = characterRepository.findById(guiltyId);
+//        if(currentGuilty.isEmpty()){
+//            throw new NotFoundException("Guilty with such Id doesn't exist");
+//        }
+//        CharacterEntity existingGuilty = currentGuilty.get();
+//        guilty.setCharacter(existingGuilty);
+//        characterGuiltyRepository.saveAndFlush(guilty);
+//
+//
+//        CharacterVictimEntity victim = new CharacterVictimEntity();
+//        if(existingMission.getWithVictim()){
+//            Optional<CharacterEntity> currentVictim = characterRepository.findById(victimId);
+//            if(currentVictim.isEmpty()){
+//                throw new NotFoundException("Victim with such Id doesn't exist");
+//            }
+//            CharacterEntity existingVictim = currentVictim.get();
+//            victim.setCharacter(existingVictim);
+//            characterVictimRepository.saveAndFlush(victim);
+//        }
+//
+//
+//        MissionDetectiveEntity missionDetective = new MissionDetectiveEntity();
+//        missionDetective.setCharacterGuilty(guilty);
+//        missionDetective.setCharacters(characters);
+//        if(existingMission.getWithVictim()){
+//            missionDetective.setCharacterVictim(victim);
+//        }
+//
+//        missionDetectiveRepository.save(missionDetective);
+//        return "Detective mission was created with missionId of: \" " + missionId + "\" and with these charactersIds \" " + charactersId;
+//    }
 
     public Character updateCharacter(
             Long characterId,
             CharacterEntity characterBody
     ) throws BadRequestException, NotFoundException {
        CharacterEntity existingCharacter = CharacterWithSuchIdDoesntExist(characterId);
-        AssignMissionNotNow(characterBody);
         AllowableLevelOfDifficulty(characterBody);
 
         if(characterBody.getDescription() != null){
@@ -156,9 +147,6 @@ public class CharacterService {
         if(characterBody.getLevelOfDifficulty() != null){
             existingCharacter.setLevelOfDifficulty(characterBody.getLevelOfDifficulty());
         }
-        if(characterBody.getIsGuilty() != null){
-            existingCharacter.setIsGuilty(characterBody.getIsGuilty());
-        }
 
         return Character.toModel(characterRepository.save(existingCharacter));
     }
@@ -167,12 +155,6 @@ public class CharacterService {
         CharacterWithSuchIdDoesntExist(characterId);
         characterRepository.deleteById(characterId);
         return "Character with id \" " + characterId + "\" was deleted";
-    }
-
-    private void AssignMissionNotNow(CharacterEntity characterBody) throws BadRequestException {
-        if(characterBody.getMissionDetective() != null || characterBody.getMissionDetectiveId() != null){
-            throw new BadRequestException("You can't assign missionId right now!");
-        }
     }
 
     private void AllowableLevelOfDifficulty(CharacterEntity characterBody) throws BadRequestException {
@@ -198,36 +180,36 @@ public class CharacterService {
         return detective.get();
     }
 
-    private static boolean isMoreThanOneGuilty(List<CharacterEntity> characters) throws NotFoundException {
-        boolean isGuiltyThere = false;
-        boolean moreThanOneGuilty = false;
-        for (CharacterEntity c : characters) {
-            if (c.getName() == null || c.getName().trim().isEmpty()) {
-                throw new NotFoundException("Character with Id \"" + c.getId().toString() + "\" doesn't exist");
-            }
-
-            if (isGuiltyThere && c.getIsGuilty()) {
-                moreThanOneGuilty = true;
-            }
-
-            if (c.getIsGuilty()) {
-                isGuiltyThere = true;
-            }
-        }
-        return moreThanOneGuilty;
-    }
-
-    private static boolean isThereOneGuilty(List<CharacterEntity> characters) throws NotFoundException {
-        boolean isGuiltyThere = false;
-        for (CharacterEntity c : characters) {
-            if (c.getName() == null || c.getName().trim().isEmpty()) {
-                throw new NotFoundException("Character with id \"" + c.getId().toString() + "\" doesn't exist");
-            }
-
-            if (c.getIsGuilty()) {
-                isGuiltyThere = true;
-            }
-        }
-        return isGuiltyThere;
-    }
+//    private static boolean isMoreThanOneGuilty(List<CharacterEntity> characters) throws NotFoundException {
+//        boolean isGuiltyThere = false;
+//        boolean moreThanOneGuilty = false;
+//        for (CharacterEntity c : characters) {
+//            if (c.getName() == null || c.getName().trim().isEmpty()) {
+//                throw new NotFoundException("Character with Id \"" + c.getId().toString() + "\" doesn't exist");
+//            }
+//
+//            if (isGuiltyThere && c.getIsGuilty()) {
+//                moreThanOneGuilty = true;
+//            }
+//
+//            if (c.getIsGuilty()) {
+//                isGuiltyThere = true;
+//            }
+//        }
+//        return moreThanOneGuilty;
+//    }
+//
+//    private static boolean isThereOneGuilty(List<CharacterEntity> characters) throws NotFoundException {
+//        boolean isGuiltyThere = false;
+//        for (CharacterEntity c : characters) {
+//            if (c.getName() == null || c.getName().trim().isEmpty()) {
+//                throw new NotFoundException("Character with id \"" + c.getId().toString() + "\" doesn't exist");
+//            }
+//
+//            if (c.getIsGuilty()) {
+//                isGuiltyThere = true;
+//            }
+//        }
+//        return isGuiltyThere;
+//    }
 }

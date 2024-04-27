@@ -18,13 +18,6 @@ public class CharacterGuiltyEntity {
     Long id;
 
     @OneToOne
-    @JoinColumn(name = "mission_detective_id", referencedColumnName = "id")
-    MissionDetectiveEntity missionDetective;
-
-    @Column(name = "mission_detective_id", updatable = false, insertable = false)
-    Long missionDetectiveId;
-
-    @OneToOne
     @JoinColumn(name = "character_entity_id", referencedColumnName = "id")
     CharacterEntity character;
 

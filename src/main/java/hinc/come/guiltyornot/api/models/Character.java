@@ -29,16 +29,11 @@ public class Character {
 
     String feature;
 
-    Boolean isGuilty;
-
-    Long missionDetectiveId;
-
     Long detectiveId;
 
     public static Character toModel(CharacterEntity entity) {
         Character model = new Character();
         model.setId(entity.getId());
-        model.setMissionDetectiveId(entity.getMissionDetectiveId());
         model.setDescription(entity.getDescription());
         model.setAge(entity.getAge());
         model.setGender(entity.getGender());
@@ -47,7 +42,6 @@ public class Character {
         model.setName(entity.getName());
         model.setLevelOfDifficulty(entity.getLevelOfDifficulty());
         model.setHairColor(entity.getHairColor());
-        model.setIsGuilty(entity.getIsGuilty());
         return model;
     }
     public static List<Character> toModelList(List<CharacterEntity> entities) {
