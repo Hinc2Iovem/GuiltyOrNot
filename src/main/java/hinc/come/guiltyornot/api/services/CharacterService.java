@@ -36,8 +36,10 @@ public class CharacterService {
                 || characterBody.getGender() == null || characterBody.getGender().trim().isEmpty()
                 || characterBody.getAge() == null || characterBody.getAge() == 0
                 || characterBody.getFeature() == null || characterBody.getFeature().trim().isEmpty()
+                || characterBody.getCharacterImgUrl() == null || characterBody.getCharacterImgUrl().trim().isEmpty()
+                || characterBody.getGuiltyImgUrl() == null || characterBody.getGuiltyImgUrl().trim().isEmpty()
         ) {
-            throw new MissingCredentialsException("Description, name, hairColor, gender, age, isGuilty, detectiveId and feature are required!");
+            throw new MissingCredentialsException("Description, name, hairColor, gender, age, isGuilty, detectiveId, characterImg, guiltyImg and feature are required!");
         }
         AllowableLevelOfDifficulty(characterBody);
         characterBody.setDetective(detective);

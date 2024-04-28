@@ -1,6 +1,7 @@
 package hinc.come.guiltyornot.api.models;
 
 import hinc.come.guiltyornot.api.store.entities.DetectiveImagesEntity;
+import hinc.come.guiltyornot.api.store.entities.MissionDetectiveCharactersEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,14 +18,14 @@ public class MissionDetectiveCharacters {
     Long missionDetectiveId;
     String characterIds;
 
-    public static MissionDetectiveCharacters toModel(MissionDetectiveCharacters entity) {
+    public static MissionDetectiveCharacters toModel(MissionDetectiveCharactersEntity entity) {
         MissionDetectiveCharacters model = new MissionDetectiveCharacters();
         model.setId(entity.getId());
         model.setMissionDetectiveId(entity.getMissionDetectiveId());
         model.setCharacterIds(entity.getCharacterIds());
         return model;
     }
-    public static List<MissionDetectiveCharacters> toModelList(List<MissionDetectiveCharacters> entities) {
+    public static List<MissionDetectiveCharacters> toModelList(List<MissionDetectiveCharactersEntity> entities) {
         return entities.stream().map(MissionDetectiveCharacters::toModel).collect(Collectors.toList());
     }
 }

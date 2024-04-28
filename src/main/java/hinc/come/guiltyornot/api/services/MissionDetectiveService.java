@@ -34,7 +34,8 @@ public class MissionDetectiveService {
     CharacterVictimRepository characterVictimRepository;
     @Autowired
     CharacterGuiltyRepository characterGuiltyRepository;
-
+    @Autowired
+    MissionDetectiveCharactersRepository missionDetectiveCharactersRepository;
 
     @Transactional(readOnly = true)
     public List<MissionDetective> getMissions() {
@@ -73,8 +74,9 @@ public class MissionDetectiveService {
                 missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
                 missionBody.getRole().trim().isEmpty() || missionBody.getCharacterIds().isEmpty() ||
                 missionBody.getCharacterGuiltyId() == null
+//                    || missionBody.getImgUrl() == null || missionBody.getImgUrl().trim().isEmpty()
             ) {
-                throw new MissingCredentialsException("Description, CharacterGuiltyId, CharacterIds, title, and role(detective) are required");
+                throw new MissingCredentialsException("Description, CharacterGuiltyId, CharacterIds, title, imgUrl and role(detective) are required");
             }
             bodyForSending.setDescription(missionBody.getDescription());
             bodyForSending.setTitle(missionBody.getTitle());
@@ -103,6 +105,8 @@ public class MissionDetectiveService {
             }
             bodyForSending.setCharacterIds(characterIds);
             bodyForSending.setCharacters(characters);
+
+
 
         int levelOfDifficulty;
         if(missionBody.getLevelOfDifficulty() != null) {
@@ -153,6 +157,12 @@ public class MissionDetectiveService {
         bodyForSending.setCharacterGuiltyId(missionBody.getCharacterGuiltyId());
 
         missionDetectiveRepository.saveAndFlush(bodyForSending);
+
+        MissionDetectiveCharactersEntity missionDetectiveCharacters = new MissionDetectiveCharactersEntity();
+        missionDetectiveCharacters.setMissionDetective(bodyForSending);
+        missionDetectiveCharacters.setCharacterIds(characterIds.toString());
+        missionDetectiveCharacters.setMissionDetectiveId(bodyForSending.getId());
+        missionDetectiveCharactersRepository.save(missionDetectiveCharacters);
 
         for(CharacterEntity c : characters){
             c.setMissionDetectiveId(missionBody.getId());

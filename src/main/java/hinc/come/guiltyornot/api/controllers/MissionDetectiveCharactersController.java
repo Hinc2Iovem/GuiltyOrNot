@@ -2,7 +2,9 @@ package hinc.come.guiltyornot.api.controllers;
 
 import hinc.come.guiltyornot.api.exceptions.BadRequestException;
 import hinc.come.guiltyornot.api.models.DetectiveImages;
+import hinc.come.guiltyornot.api.models.MissionDetectiveCharacters;
 import hinc.come.guiltyornot.api.services.DetectiveImagesService;
+import hinc.come.guiltyornot.api.services.MissionDetectiveCharactersService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +18,17 @@ import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
-@RequestMapping("/api/v1/images/detectives")
-public class DetectiveImagesController {
+@RequestMapping("/api/v1/detectives/missions")
+public class MissionDetectiveCharactersController {
     @Autowired
-    DetectiveImagesService detectiveImagesService;
+    MissionDetectiveCharactersService missionDetectiveCharactersService;
 
-    public static final String SINGLE_DETECTIVE = "/{detectiveId}";
+    public static final String SINGLE_MISSION = "/{missionId}";
 
-    @GetMapping(SINGLE_DETECTIVE)
-    public ResponseEntity<List<DetectiveImages>> getAllImages(@PathVariable Long detectiveId) throws BadRequestException {
+    @GetMapping(SINGLE_MISSION)
+    public ResponseEntity<List<MissionDetectiveCharacters>> getAllCharacterIds(@PathVariable Long missionId) throws BadRequestException {
         try {
-            List<DetectiveImages> images = detectiveImagesService.getAllImages(detectiveId);
+            List<MissionDetectiveCharacters> images = missionDetectiveCharactersService.getAllCharacterIds(missionId);
             return ResponseEntity.ok().body(images);
         } catch (Exception e) {
             throw new BadRequestException("Something went wrong: " + e.getMessage());

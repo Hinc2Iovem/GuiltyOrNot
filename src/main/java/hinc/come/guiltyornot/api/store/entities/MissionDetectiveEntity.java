@@ -39,6 +39,8 @@ public class MissionDetectiveEntity {
 
     String role;
 
+    String imgUrl;
+
     @OneToOne
     @JoinColumn(name = "detective_id", referencedColumnName = "id")
     DetectiveEntity detective;
