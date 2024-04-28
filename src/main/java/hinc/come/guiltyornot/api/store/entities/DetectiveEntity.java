@@ -26,6 +26,8 @@ public class DetectiveEntity {
     @Builder.Default
     Integer money = 0;
 
+    String imgUrl;
+
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     UserEntity user;
