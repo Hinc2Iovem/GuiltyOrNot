@@ -21,8 +21,8 @@ public class CharacterQuestionController {
     @Autowired
     CharacterQuestionService characterQuestionService;
 
-    private static final String QUESTION_BY_CHARACTER_ID_SINGLE = "/{characterId}/questions/{questionId}";
-    private static final String QUESTION_BY_CHARACTER_ID = "/{characterId}/questions";
+    public static final String QUESTION_BY_CHARACTER_ID_SINGLE = "/{characterId}/questions/{questionId}";
+    public static final String QUESTION_BY_CHARACTER_ID = "/{characterId}/questions";
 
     @GetMapping(QUESTION_BY_CHARACTER_ID)
     public ResponseEntity<List<CharacterQuestion>> getCharacterQuestions(

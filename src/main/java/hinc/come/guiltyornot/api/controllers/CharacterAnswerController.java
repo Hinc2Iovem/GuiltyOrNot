@@ -23,7 +23,7 @@ public class CharacterAnswerController {
     @Autowired
     CharacterAnswerService characterAnswerService;
 
-    private static final String ANSWER_BY_CHARACTER_ID_SINGLE = "/{answerId}";
+    public static final String ANSWER_BY_CHARACTER_ID_SINGLE = "/{answerId}";
 
     @GetMapping
     public ResponseEntity<List<CharacterAnswer>> getCharacterAnswers(

@@ -22,8 +22,8 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
-    private static final String SINGLE_QUESTION = "/{questionId}";
-    private static final String GET_QUESTIONS_BY_MISSION_ID = "/missions/{missionGuiltyId}";
+    public static final String SINGLE_QUESTION = "/{questionId}";
+    public static final String GET_QUESTIONS_BY_MISSION_ID = "/missions/{missionGuiltyId}";
 
     @GetMapping
     @Transactional(readOnly = true)
