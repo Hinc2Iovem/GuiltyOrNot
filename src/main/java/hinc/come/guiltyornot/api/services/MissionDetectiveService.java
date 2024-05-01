@@ -72,14 +72,14 @@ public class MissionDetectiveService {
         if(existingUser.getRole().equalsIgnoreCase("detective") || existingUser.getRole().equalsIgnoreCase("admin")){
             if(missionBody.getDescription() == null || missionBody.getDescription().isEmpty() ||
                 missionBody.getTitle() == null || missionBody.getTitle().isEmpty() ||
-                missionBody.getRole().trim().isEmpty() || missionBody.getCharacterIds().isEmpty() ||
-                missionBody.getCharacterGuiltyId() == null
-//                    || missionBody.getImgUrl() == null || missionBody.getImgUrl().trim().isEmpty()
+                missionBody.getCharacterIds().isEmpty() || missionBody.getCharacterGuiltyId() == null
+                    || missionBody.getImgUrl() == null || missionBody.getImgUrl().trim().isEmpty()
             ) {
-                throw new MissingCredentialsException("Description, CharacterGuiltyId, CharacterIds, title, imgUrl and role(detective) are required");
+                throw new MissingCredentialsException("Description, CharacterGuiltyId, CharacterIds, title and imgUrl are required");
             }
             bodyForSending.setDescription(missionBody.getDescription());
             bodyForSending.setTitle(missionBody.getTitle());
+            bodyForSending.setImgUrl(missionBody.getImgUrl());
             bodyForSending.setRole(missionBody.getRole());
             if(existingUser.getRole().equalsIgnoreCase("admin")){
                 if(missionBody.getDefeatExp() == 0 || missionBody.getDefeatMoney() == 0 ||
@@ -116,12 +116,6 @@ public class MissionDetectiveService {
             }
             bodyForSending.setLevelOfDifficulty(levelOfDifficulty);
         }
-
-           if(!existingUser.getRole().equalsIgnoreCase("admin")){
-               if(!missionBody.getRole().equals(existingUser.getRole())){
-                   throw new BadRequestException("Your role should be of a type which you are trying to assign the mission!");
-               }
-           }
 
 
         if(missionBody.getWithVictim()){

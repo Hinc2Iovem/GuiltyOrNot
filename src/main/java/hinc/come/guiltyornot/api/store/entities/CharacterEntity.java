@@ -33,7 +33,6 @@ public class CharacterEntity {
     String feature;
 
     String characterImgUrl;
-    String guiltyImgUrl;
 
     @ManyToOne
     @JoinColumn(name = "detective_id", referencedColumnName = "id")

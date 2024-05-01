@@ -24,6 +24,7 @@ public class MissionDetectiveEntity {
     @Column(unique = true)
     String title;
 
+    @Column(length = 2500)
     String description;
 
     @Builder.Default
@@ -37,9 +38,9 @@ public class MissionDetectiveEntity {
 
     Integer defeatMoney;
 
-    String role;
-
     String imgUrl;
+
+    String role;
 
     @OneToOne
     @JoinColumn(name = "detective_id", referencedColumnName = "id")

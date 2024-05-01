@@ -33,8 +33,6 @@ public class MissionDetective {
 
     Integer defeatMoney;
 
-    String role;
-
     Long detectiveId;
 
     Long characterVictimId;
@@ -42,12 +40,15 @@ public class MissionDetective {
     Long characterGuiltyId;
 
     List<Long> characterIds;
+
+    String imgUrl;
+
+    String role;
     public static MissionDetective toModel(MissionDetectiveEntity entity) {
         MissionDetective model = new MissionDetective();
         model.setId(entity.getId());
         model.setDetectiveId(entity.getDetectiveId());
         model.setDescription(entity.getDescription());
-        model.setRole(entity.getRole());
         model.setDefeatExp(entity.getDefeatExp());
         model.setDefeatMoney(entity.getDefeatMoney());
         model.setRewardExp(entity.getRewardExp());
@@ -58,6 +59,8 @@ public class MissionDetective {
         model.setWithVictim(entity.getWithVictim());
         model.setTitle(entity.getTitle());
         model.setCharacterIds(entity.getCharacterIds());
+        model.setImgUrl(entity.getImgUrl());
+        model.setRole(entity.getRole());
         return model;
     }
     public static List<MissionDetective> toModelList(List<MissionDetectiveEntity> entities) {

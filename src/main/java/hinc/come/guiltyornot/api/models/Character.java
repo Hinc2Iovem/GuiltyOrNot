@@ -31,6 +31,8 @@ public class Character {
 
     Long detectiveId;
 
+    String characterImgUrl;
+
     public static Character toModel(CharacterEntity entity) {
         Character model = new Character();
         model.setId(entity.getId());
@@ -42,6 +44,7 @@ public class Character {
         model.setName(entity.getName());
         model.setLevelOfDifficulty(entity.getLevelOfDifficulty());
         model.setHairColor(entity.getHairColor());
+        model.setCharacterImgUrl(entity.getCharacterImgUrl());
         return model;
     }
     public static List<Character> toModelList(List<CharacterEntity> entities) {
