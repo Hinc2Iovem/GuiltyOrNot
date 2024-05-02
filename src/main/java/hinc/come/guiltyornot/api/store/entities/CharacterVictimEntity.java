@@ -23,4 +23,11 @@ public class CharacterVictimEntity {
 
     @Column(name = "character_entity_id", updatable = false, insertable = false)
     Long characterEntityId;
+
+    @ManyToOne
+    @JoinColumn(name = "mission_id", referencedColumnName = "id")
+    MissionDetectiveEntity mission;
+
+    @Column(name = "mission_id", updatable = false, insertable = false)
+    Long missionId;
 }

@@ -23,11 +23,25 @@ public class MissionDetectiveController {
     public static final String CREATE_MISSION = "/users/{userId}";
     public static final String SINGLE_MISSION = "/{missionId}/users/{userId}";
     public static final String SINGLE_MISSION_BY_ID = "/{missionId}";
+    public static final String MISSIONS_BY_ROLE = "/roles/{role}";
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<List<MissionDetective>> getMissions() throws BadRequestException {
         try {
             List<MissionDetective> missions = missionDetectiveService.getMissions();
+            return ResponseEntity.ok().body(missions);
+        } catch (Exception e){
+            throw new BadRequestException("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(MISSIONS_BY_ROLE)
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<MissionDetective>> getMissionsByRole(
+            @PathVariable(name = "role") String role
+    ) throws BadRequestException {
+        try {
+            List<MissionDetective> missions = missionDetectiveService.getMissionsByRole(role);
             return ResponseEntity.ok().body(missions);
         } catch (Exception e){
             throw new BadRequestException("Something went wrong: " + e.getMessage());

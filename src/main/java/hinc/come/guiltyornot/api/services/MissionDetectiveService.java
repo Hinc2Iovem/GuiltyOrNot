@@ -42,6 +42,12 @@ public class MissionDetectiveService {
         return MissionDetective.toModelList(missionDetectiveRepository.findAllBy());
     }
 
+    @Transactional(readOnly = true)
+    public List<MissionDetective> getMissionsByRole(String role) {
+        return MissionDetective.toModelList(missionDetectiveRepository.findAllByRole(role));
+    }
+
+
     public MissionDetective getMissionById(Long missionId) throws NotFoundException {
         Optional<MissionDetectiveEntity> optionalMission = missionDetectiveRepository.findById(missionId);
         if (optionalMission.isEmpty()) {
@@ -118,6 +124,8 @@ public class MissionDetectiveService {
         }
 
 
+        missionDetectiveRepository.saveAndFlush(bodyForSending);
+
         if(missionBody.getWithVictim()){
             Optional<CharacterEntity> currentCharacterVictimOptional = characterRepository.findById(missionBody.getCharacterVictimId());
             if(currentCharacterVictimOptional.isEmpty()){
@@ -127,14 +135,9 @@ public class MissionDetectiveService {
             CharacterVictimEntity victim = new CharacterVictimEntity();
             victim.setCharacterEntityId(missionBody.getCharacterVictimId());
             victim.setCharacter(currentCharacterVictim);
+            victim.setMissionId(bodyForSending.getId());
+            victim.setMission(bodyForSending);
             characterVictimRepository.saveAndFlush(victim);
-            bodyForSending.setCharacterVictimId(missionBody.getCharacterVictimId());
-            bodyForSending.setCharacterVictim(victim);
-            bodyForSending.setWithVictim(true);
-        }
-
-        if(missionBody.getWithVictim() == null){
-            bodyForSending.setWithVictim(false);
         }
 
         Optional<CharacterEntity> currentCharacterGuiltyOptional = characterRepository.findById(missionBody.getCharacterGuiltyId());
@@ -145,12 +148,11 @@ public class MissionDetectiveService {
         CharacterGuiltyEntity guilty = new CharacterGuiltyEntity();
         guilty.setCharacterEntityId(missionBody.getCharacterGuiltyId());
         guilty.setCharacter(currentCharacterGuilty);
+        guilty.setMissionId(bodyForSending.getId());
+        guilty.setMission(bodyForSending);
         characterGuiltyRepository.saveAndFlush(guilty);
 
-        bodyForSending.setCharacterGuilty(guilty);
-        bodyForSending.setCharacterGuiltyId(missionBody.getCharacterGuiltyId());
 
-        missionDetectiveRepository.saveAndFlush(bodyForSending);
 
         MissionDetectiveCharactersEntity missionDetectiveCharacters = new MissionDetectiveCharactersEntity();
         missionDetectiveCharacters.setMissionDetective(bodyForSending);

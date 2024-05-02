@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface CharacterGuiltyRepository extends JpaRepository<CharacterGuiltyEntity, Long> {
+    CharacterGuiltyEntity findByMissionId(Long missionId);
 }

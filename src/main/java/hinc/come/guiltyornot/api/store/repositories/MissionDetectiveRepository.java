@@ -1,5 +1,6 @@
 package hinc.come.guiltyornot.api.store.repositories;
 
+import hinc.come.guiltyornot.api.store.entities.MissionDetectiveCharactersEntity;
 import hinc.come.guiltyornot.api.store.entities.MissionDetectiveEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,6 @@ public interface MissionDetectiveRepository extends JpaRepository<MissionDetecti
     List<MissionDetectiveEntity> findAllBy();
     MissionDetectiveEntity findByTitle(String title);
     List<MissionDetectiveEntity> findAllByDetectiveId(Long detectiveId);
+    List<MissionDetectiveEntity> findAllByRole(String role);
+
 }
